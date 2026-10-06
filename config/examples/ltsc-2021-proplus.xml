@@ -1,0 +1,15 @@
+<Configuration>
+  <Add OfficeClientEdition="64" Channel="PerpetualVL2021">
+    <Product ID="ProPlus2021Volume">
+      <Language ID="id-id" />
+    </Product>
+  </Add>
+
+  <RemoveMSI />
+
+  <Display Level="Full" AcceptEULA="TRUE" />
+
+  <Property Name="AUTOACTIVATE" Value="0" />
+
+  <Updates Enabled="TRUE" Channel="PerpetualVL2021" />
+</Configuration>

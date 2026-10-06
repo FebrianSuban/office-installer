@@ -1,0 +1,34 @@
+# Folder sementara installer
+Office-Installer/
+office-installer-temp/
+temp/
+
+# File hasil download Office
+*.cab
+*.dat
+*.msi
+*.exe
+
+# Kecuali script project
+!Install-Office.ps1
+
+# File konfigurasi lokal
+configuration.local.xml
+
+# PowerShell
+*.log
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Editor
+.vscode/
+.idea/
+
+# Backup
+*.bak
+*.tmp
+
+# OS
+.DS_Store

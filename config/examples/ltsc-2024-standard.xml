@@ -1,0 +1,15 @@
+<Configuration>
+  <Add OfficeClientEdition="64" Channel="PerpetualVL2024">
+    <Product ID="Standard2024Volume">
+      <Language ID="id-id" />
+    </Product>
+  </Add>
+
+  <RemoveMSI />
+
+  <Display Level="Full" AcceptEULA="TRUE" />
+
+  <Property Name="AUTOACTIVATE" Value="0" />
+
+  <Updates Enabled="TRUE" Channel="PerpetualVL2024" />
+</Configuration>
