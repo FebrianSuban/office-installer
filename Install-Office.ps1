@@ -10,7 +10,7 @@
     melakukan deployment Microsoft Office LTSC menggunakan
     Office Deployment Tool (ODT) resmi Microsoft.
 
-    Supported:
+    Didukung:
         - Office LTSC 2024
         - Office LTSC 2021
         - Professional Plus
@@ -38,7 +38,7 @@
 $ErrorActionPreference = "Stop"
 
 # ============================================================
-# RGOAD IDENTITY
+# IDENTITAS RGOAD
 # ============================================================
 
 $RGOADName = "RGOAD"
@@ -72,7 +72,7 @@ $ElevatedScript = Join-Path `
     "Office-Installer-Elevated.ps1"
 
 # ============================================================
-# RGOAD THEME
+# TEMA RGOAD
 # ============================================================
 
 $RGOADPrimary = "Cyan"
@@ -85,39 +85,37 @@ $RGOADMuted = "DarkGray"
 $RGOADText = "White"
 
 # ============================================================
-# SAFE UI CHARACTERS
+# KARAKTER UI
 # ============================================================
 
 $RGOADLine = "------------------------------------------------------------"
 $RGOADDoubleLine = "============================================================"
 
 # ============================================================
-# CONSOLE SETUP
+# INISIALISASI CONSOLE
 # ============================================================
 
 function Initialize-RGOADConsole {
 
     try {
-
         $Host.UI.RawUI.WindowTitle = `
-            "RGOAD Office Installer | LTSC 2024 / LTSC 2021"
+            "RGOAD | Office Installer | LTSC 2024 / LTSC 2021"
     }
     catch {
-        # Ignore console title errors.
+        # Abaikan jika judul console tidak dapat diubah.
     }
 
     try {
-
         [Console]::OutputEncoding = `
             New-Object System.Text.UTF8Encoding($false)
     }
     catch {
-        # Ignore encoding errors.
+        # Abaikan jika encoding tidak dapat diubah.
     }
 }
 
 # ============================================================
-# LOGO
+# LOGO RGOAD
 # ============================================================
 
 function Show-RGOADLogo {
@@ -125,30 +123,31 @@ function Show-RGOADLogo {
     Clear-Host
 
     Write-Host ""
-    Write-Host "  ██████╗  ██████╗  ██████╗  █████╗ ██████╗ " `
+
+    Write-Host "  ██████╗   ██████╗   ██████╗   █████╗  ██████╗ " `
         -ForegroundColor Cyan
 
-    Write-Host "  ██╔══██╗██╔════╝ ██╔════╝ ██╔══██╗██╔══██╗" `
+    Write-Host "  ██╔══██╗ ██╔════╝  ██╔════╝  ██╔══██╗ ██╔══██╗" `
         -ForegroundColor Cyan
 
-    Write-Host "  ██████╔╝██║  ███╗██║  ███╗███████║██║  ██║" `
+    Write-Host "  ██████╔╝ ██║  ███╗ ██║  ███╗ ███████║ ██║  ██║" `
         -ForegroundColor Cyan
 
-    Write-Host "  ██╔══██╗██║   ██║██║   ██║██╔══██║██║  ██║" `
+    Write-Host "  ██╔══██╗ ██║   ██║ ██║   ██║ ██╔══██║ ██║  ██║" `
         -ForegroundColor Cyan
 
-    Write-Host "  ██║  ██║╚██████╔╝╚██████╔╝██║  ██║██████╔╝" `
+    Write-Host "  ██║  ██║ ╚██████╔╝ ╚██████╔╝ ██║  ██║ ██████╔╝" `
         -ForegroundColor Cyan
 
-    Write-Host "  ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═════╝ " `
+    Write-Host "  ╚═╝  ╚═╝  ╚═════╝   ╚═════╝  ╚═╝  ╚═╝ ╚═════╝ " `
         -ForegroundColor Cyan
 
     Write-Host ""
 
-    Write-Host "                     RGOAD" `
+    Write-Host "                  RGOAD" `
         -ForegroundColor White
 
-    Write-Host "              $RGOADTagline" `
+    Write-Host "          $RGOADTagline" `
         -ForegroundColor DarkCyan
 
     Write-Host ""
@@ -288,6 +287,7 @@ function Show-Section {
     )
 
     Write-Host ""
+
     Write-Host "  $RGOADLine" `
         -ForegroundColor DarkGray
 
@@ -325,12 +325,13 @@ function Show-Step {
     )
 
     Write-Host ""
+
     Write-Host "  $RGOADLine" `
         -ForegroundColor DarkGray
 
     Write-Host ""
 
-    Write-Host "  STEP $Number/$Total  " `
+    Write-Host "  LANGKAH $Number/$Total  " `
         -NoNewline `
         -ForegroundColor Cyan
 
@@ -355,11 +356,11 @@ function Pause-RGOAD {
     Write-Host ""
 
     Read-Host `
-        "  Press ENTER to exit"
+        "  Tekan ENTER untuk keluar"
 }
 
 # ============================================================
-# ADMIN CHECK
+# CEK ADMINISTRATOR
 # ============================================================
 
 function Test-Administrator {
@@ -378,39 +379,28 @@ function Test-Administrator {
 }
 
 # ============================================================
-# ELEVATION
+# ELEVASI ADMINISTRATOR
 # ============================================================
 
 function Request-Administrator {
 
     if (Test-Administrator) {
-
         return
     }
 
-    # --------------------------------------------------------
-    # IMPORTANT:
-    #
-    # When running:
-    #
-    # irm URL | iex
-    #
-    # $PSCommandPath is normally empty.
-    #
-    # Therefore we download a temporary copy and execute
-    # that copy as Administrator.
-    # --------------------------------------------------------
-
     Write-Host ""
+
     Write-Host "  $RGOADDoubleLine" `
         -ForegroundColor Yellow
 
     Write-Host ""
-    Write-Host "  RGOAD membutuhkan Administrator privilege." `
+
+    Write-Host "  RGOAD membutuhkan hak Administrator." `
         -ForegroundColor Yellow
 
     Write-Host ""
-    Write-Host "  Windows akan menampilkan UAC." `
+
+    Write-Host "  Windows akan menampilkan permintaan UAC." `
         -ForegroundColor DarkGray
 
     Write-Host ""
@@ -418,7 +408,7 @@ function Request-Administrator {
     try {
 
         # ----------------------------------------------------
-        # IF RUNNING FROM A REAL PS1 FILE
+        # JIKA DIJALANKAN DARI FILE PS1
         # ----------------------------------------------------
 
         if (
@@ -448,7 +438,7 @@ function Request-Administrator {
         }
 
         # ----------------------------------------------------
-        # PIPE MODE: IRM | IEX
+        # JIKA DIJALANKAN DENGAN IRM | IEX
         # ----------------------------------------------------
 
         if (
@@ -458,7 +448,7 @@ function Request-Administrator {
         ) {
 
             throw `
-                "RepositoryScriptUrl belum dikonfigurasi."
+                "URL repository RGOAD belum dikonfigurasi."
         }
 
         Write-Info `
@@ -481,7 +471,7 @@ function Request-Administrator {
         if ($DownloadedSize -lt 10000) {
 
             throw `
-                "File installer yang diunduh terlalu kecil."
+                "File installer yang diunduh terlalu kecil atau tidak valid."
         }
 
         Write-Sukses `
@@ -509,7 +499,7 @@ function Request-Administrator {
     catch {
 
         Write-Gagal `
-            "Gagal melakukan elevasi Administrator."
+            "Gagal mendapatkan hak Administrator."
 
         Write-Host ""
 
@@ -526,7 +516,7 @@ function Request-Administrator {
 }
 
 # ============================================================
-# WINDOWS CHECK
+# CEK WINDOWS
 # ============================================================
 
 function Test-Windows {
@@ -534,8 +524,8 @@ function Test-Windows {
     Show-Step `
         -Number 1 `
         -Total 7 `
-        -Title "SYSTEM CHECK" `
-        -Description "Checking Windows environment."
+        -Title "PEMERIKSAAN SISTEM" `
+        -Description "Memeriksa lingkungan Windows."
 
     try {
 
@@ -553,7 +543,7 @@ function Test-Windows {
             Write-Host ""
 
             Write-Host `
-                "  Detected: $($OS.Caption)" `
+                "  Sistem terdeteksi: $($OS.Caption)" `
                 -ForegroundColor Yellow
 
             exit 1
@@ -563,7 +553,7 @@ function Test-Windows {
             "Windows: $($OS.Caption)"
 
         Write-Sukses `
-            "Administrator privilege: available."
+            "Hak Administrator: tersedia."
     }
     catch {
 
@@ -575,13 +565,19 @@ function Test-Windows {
 }
 
 # ============================================================
-# INTERNET CHECK
+# CEK INTERNET
 # ============================================================
 
 function Test-Internet {
 
+    Show-Step `
+        -Number 2 `
+        -Total 7 `
+        -Title "PEMERIKSAAN JARINGAN" `
+        -Description "Memeriksa koneksi ke server Microsoft."
+
     Write-Info `
-        "Checking Microsoft connectivity..."
+        "Memeriksa konektivitas Microsoft..."
 
     try {
 
@@ -597,18 +593,18 @@ function Test-Internet {
         ) {
 
             Write-Sukses `
-                "Internet connection available."
+                "Koneksi internet tersedia."
         }
         else {
 
             throw `
-                "Microsoft tidak dapat diakses."
+                "Server Microsoft tidak dapat diakses."
         }
     }
     catch {
 
         Write-Gagal `
-            "Tidak dapat mengakses Microsoft."
+            "Tidak dapat mengakses server Microsoft."
 
         Write-Host ""
 
@@ -620,7 +616,7 @@ function Test-Internet {
             "  - Internet aktif."
 
         Write-Host `
-            "  - Tidak menggunakan captive portal."
+            "  - Tidak berada di captive portal."
 
         Write-Host `
             "  - Firewall tidak memblokir PowerShell."
@@ -632,13 +628,19 @@ function Test-Internet {
 }
 
 # ============================================================
-# WORK DIRECTORY
+# SIAPKAN WORKSPACE
 # ============================================================
 
 function Initialize-WorkDirectory {
 
+    Show-Step `
+        -Number 3 `
+        -Total 7 `
+        -Title "WORKSPACE" `
+        -Description "Menyiapkan folder kerja sementara."
+
     Write-Info `
-        "Preparing RGOAD workspace..."
+        "Menyiapkan workspace RGOAD..."
 
     if (Test-Path $WorkDirectory) {
 
@@ -653,7 +655,7 @@ function Initialize-WorkDirectory {
         catch {
 
             Write-Peringatan `
-                "Workspace lama tidak dapat dibersihkan sepenuhnya."
+                "Sebagian file workspace lama tidak dapat dihapus."
         }
     }
 
@@ -670,11 +672,11 @@ function Initialize-WorkDirectory {
         Out-Null
 
     Write-Sukses `
-        "Workspace ready."
+        "Workspace RGOAD siap digunakan."
 }
 
 # ============================================================
-# GENERIC MENU
+# MENU UMUM
 # ============================================================
 
 function Show-Menu {
@@ -742,7 +744,7 @@ function Show-Menu {
 
     while ($true) {
 
-        $InputUser = Read-Host "  › Select"
+        $InputUser = Read-Host "  › Pilih"
 
         $Number = 0
 
@@ -772,7 +774,7 @@ function Show-Menu {
 }
 
 # ============================================================
-# SELECT VERSION
+# PILIH VERSI OFFICE
 # ============================================================
 
 function Select-OfficeVersion {
@@ -781,7 +783,7 @@ function Select-OfficeVersion {
 
         [PSCustomObject]@{
             Label = "Office LTSC 2024"
-            Description = "Long-Term Servicing Channel"
+            Description = "Long-Term Servicing Channel terbaru"
             Value = "2024"
         }
 
@@ -793,13 +795,13 @@ function Select-OfficeVersion {
     )
 
     return Show-Menu `
-        -Title "SELECT OFFICE VERSION" `
-        -Description "Choose the Office LTSC release." `
+        -Title "PILIH VERSI OFFICE" `
+        -Description "Pilih versi Microsoft Office LTSC." `
         -Options $Options
 }
 
 # ============================================================
-# SELECT EDITION
+# PILIH EDISI OFFICE
 # ============================================================
 
 function Select-OfficeEdition {
@@ -808,25 +810,25 @@ function Select-OfficeEdition {
 
         [PSCustomObject]@{
             Label = "Professional Plus"
-            Description = "Full volume edition"
+            Description = "Edisi volume dengan aplikasi lebih lengkap"
             Value = "ProPlus"
         }
 
         [PSCustomObject]@{
             Label = "Standard"
-            Description = "Standard volume edition"
+            Description = "Edisi volume standar"
             Value = "Standard"
         }
     )
 
     return Show-Menu `
-        -Title "SELECT OFFICE EDITION" `
-        -Description "Choose the volume edition." `
+        -Title "PILIH EDISI OFFICE" `
+        -Description "Pilih edisi Microsoft Office." `
         -Options $Options
 }
 
 # ============================================================
-# SELECT APPLICATIONS
+# PILIH APLIKASI
 # ============================================================
 
 function Select-OfficeApps {
@@ -844,31 +846,31 @@ function Select-OfficeApps {
     $OfficeApps += [PSCustomObject]@{
         Id = "Word"
         Label = "Microsoft Word"
-        Description = "Documents & writing"
+        Description = "Dokumen dan penulisan"
     }
 
     $OfficeApps += [PSCustomObject]@{
         Id = "Excel"
         Label = "Microsoft Excel"
-        Description = "Spreadsheets & data"
+        Description = "Spreadsheet dan pengolahan data"
     }
 
     $OfficeApps += [PSCustomObject]@{
         Id = "PowerPoint"
         Label = "Microsoft PowerPoint"
-        Description = "Presentations"
+        Description = "Presentasi"
     }
 
     $OfficeApps += [PSCustomObject]@{
         Id = "Outlook"
         Label = "Microsoft Outlook"
-        Description = "Mail, calendar & contacts"
+        Description = "Email, kalender dan kontak"
     }
 
     $OfficeApps += [PSCustomObject]@{
         Id = "OneNote"
         Label = "Microsoft OneNote"
-        Description = "Digital notes"
+        Description = "Catatan digital"
     }
 
     if ($Edition -eq "ProPlus") {
@@ -876,7 +878,7 @@ function Select-OfficeApps {
         $OfficeApps += [PSCustomObject]@{
             Id = "Access"
             Label = "Microsoft Access"
-            Description = "Database management"
+            Description = "Manajemen database"
         }
     }
 
@@ -885,7 +887,7 @@ function Select-OfficeApps {
         $OfficeApps += [PSCustomObject]@{
             Id = "Publisher"
             Label = "Microsoft Publisher"
-            Description = "Desktop publishing"
+            Description = "Penerbitan dan tata letak"
         }
     }
 
@@ -904,15 +906,15 @@ function Select-OfficeApps {
         Show-RGOADLogo
 
         Show-RGOADHeader `
-            -Title "APPLICATIONS" `
+            -Title "PILIH APLIKASI" `
             -Subtitle "Office LTSC $Version / $Edition"
 
         Write-Host `
-            "  Select applications to install." `
+            "  Pilih aplikasi yang ingin dipasang." `
             -ForegroundColor Gray
 
         Write-Host `
-            "  Enter a number to toggle selection." `
+            "  Masukkan nomor untuk memilih atau membatalkan pilihan." `
             -ForegroundColor DarkGray
 
         Write-Host ""
@@ -972,7 +974,7 @@ function Select-OfficeApps {
             -ForegroundColor Cyan
 
         Write-Host `
-            "Select All" `
+            "Pilih Semua" `
             -ForegroundColor White
 
         Write-Host `
@@ -981,7 +983,7 @@ function Select-OfficeApps {
             -ForegroundColor Cyan
 
         Write-Host `
-            "Clear All" `
+            "Hapus Semua Pilihan" `
             -ForegroundColor Yellow
 
         Write-Host `
@@ -990,26 +992,26 @@ function Select-OfficeApps {
             -ForegroundColor Cyan
 
         Write-Host `
-            "Continue" `
+            "Lanjutkan" `
             -ForegroundColor White
 
         Write-Host ""
 
         Write-Host `
-            "  Selected: " `
+            "  Dipilih: " `
             -NoNewline `
             -ForegroundColor DarkGray
 
         Write-Host `
-            "$($SelectedApps.Count) application(s)" `
+            "$($SelectedApps.Count) aplikasi" `
             -ForegroundColor Green
 
         Write-Host ""
 
-        $InputUser = Read-Host "  › Select"
+        $InputUser = Read-Host "  › Pilih"
 
         # ----------------------------------------------------
-        # CONTINUE
+        # LANJUTKAN
         # ----------------------------------------------------
 
         if ($InputUser -eq "0") {
@@ -1029,7 +1031,7 @@ function Select-OfficeApps {
         }
 
         # ----------------------------------------------------
-        # SELECT ALL
+        # PILIH SEMUA
         # ----------------------------------------------------
 
         if (
@@ -1048,7 +1050,7 @@ function Select-OfficeApps {
         }
 
         # ----------------------------------------------------
-        # CLEAR ALL
+        # HAPUS SEMUA
         # ----------------------------------------------------
 
         if (
@@ -1115,7 +1117,7 @@ function Select-OfficeApps {
 }
 
 # ============================================================
-# SELECT ARCHITECTURE
+# PILIH ARSITEKTUR
 # ============================================================
 
 function Select-Architecture {
@@ -1124,25 +1126,25 @@ function Select-Architecture {
 
         [PSCustomObject]@{
             Label = "64-bit"
-            Description = "Recommended for modern Windows"
+            Description = "Direkomendasikan untuk Windows modern"
             Value = "64"
         }
 
         [PSCustomObject]@{
             Label = "32-bit"
-            Description = "For compatible legacy environments"
+            Description = "Untuk kebutuhan kompatibilitas tertentu"
             Value = "32"
         }
     )
 
     return Show-Menu `
-        -Title "SELECT ARCHITECTURE" `
-        -Description "Choose the Office architecture." `
+        -Title "PILIH ARSITEKTUR" `
+        -Description "Pilih arsitektur Microsoft Office." `
         -Options $Options
 }
 
 # ============================================================
-# SELECT LANGUAGE
+# PILIH BAHASA
 # ============================================================
 
 function Select-Language {
@@ -1151,20 +1153,20 @@ function Select-Language {
 
         [PSCustomObject]@{
             Label = "Bahasa Indonesia"
-            Description = "Indonesian interface"
+            Description = "Antarmuka Office dalam Bahasa Indonesia"
             Value = "id-id"
         }
 
         [PSCustomObject]@{
             Label = "English"
-            Description = "English interface"
+            Description = "Antarmuka Office dalam Bahasa Inggris"
             Value = "en-us"
         }
     )
 
     return Show-Menu `
-        -Title "SELECT LANGUAGE" `
-        -Description "Choose the Office display language." `
+        -Title "PILIH BAHASA" `
+        -Description "Pilih bahasa antarmuka Microsoft Office." `
         -Options $Options
 }
 
@@ -1284,12 +1286,10 @@ function Get-ExcludeAppXml {
     )
 
     if ($Edition -eq "ProPlus") {
-
         $AllApps += "Access"
     }
 
     if ($Version -eq "2021") {
-
         $AllApps += "Publisher"
     }
 
@@ -1307,7 +1307,6 @@ function Get-ExcludeAppXml {
     }
 
     if ($ExcludeLines.Count -eq 0) {
-
         return ""
     }
 
@@ -1317,7 +1316,7 @@ function Get-ExcludeAppXml {
 }
 
 # ============================================================
-# CONFIGURATION XML
+# BUAT CONFIGURATION.XML
 # ============================================================
 
 function New-Configuration {
@@ -1347,10 +1346,10 @@ function New-Configuration {
         -Version $Version
 
     Show-Step `
-        -Number 5 `
+        -Number 4 `
         -Total 7 `
-        -Title "CONFIGURATION" `
-        -Description "Generating configuration.xml."
+        -Title "KONFIGURASI" `
+        -Description "Membuat configuration.xml."
 
     $ExcludeXml = Get-ExcludeAppXml `
         -Version $Version `
@@ -1393,26 +1392,26 @@ $ExcludeXml
     Write-Host ""
 
     Write-Host `
-        "  Product : $ProductId" `
+        "  Product ID : $ProductId" `
         -ForegroundColor Gray
 
     Write-Host `
-        "  Channel : $Channel" `
+        "  Channel    : $Channel" `
         -ForegroundColor Gray
 
     Write-Host `
-        "  Arch    : $Architecture-bit" `
+        "  Arsitektur : $Architecture-bit" `
         -ForegroundColor Gray
 
     Write-Host `
-        "  Language: $Language" `
+        "  Bahasa     : $Language" `
         -ForegroundColor Gray
 
     return $ProductId
 }
 
 # ============================================================
-# CONFIGURATION SUMMARY
+# RINGKASAN KONFIGURASI
 # ============================================================
 
 function Show-Configuration {
@@ -1442,14 +1441,14 @@ function Show-Configuration {
     Show-RGOADLogo
 
     Show-RGOADHeader `
-        -Title "INSTALLATION SUMMARY" `
-        -Subtitle "Review configuration before deployment."
+        -Title "RINGKASAN INSTALASI" `
+        -Subtitle "Periksa konfigurasi sebelum proses deployment."
 
     $Channel = Get-Channel `
         -Version $Version
 
     Write-Host `
-        "  VERSION" `
+        "  VERSI" `
         -ForegroundColor DarkGray
 
     Write-Host `
@@ -1459,7 +1458,7 @@ function Show-Configuration {
     Write-Host ""
 
     Write-Host `
-        "  EDITION" `
+        "  EDISI" `
         -ForegroundColor DarkGray
 
     Write-Host `
@@ -1469,7 +1468,7 @@ function Show-Configuration {
     Write-Host ""
 
     Write-Host `
-        "  PRODUCT" `
+        "  PRODUCT ID" `
         -ForegroundColor DarkGray
 
     Write-Host `
@@ -1489,7 +1488,7 @@ function Show-Configuration {
     Write-Host ""
 
     Write-Host `
-        "  ARCHITECTURE" `
+        "  ARSITEKTUR" `
         -ForegroundColor DarkGray
 
     Write-Host `
@@ -1499,17 +1498,26 @@ function Show-Configuration {
     Write-Host ""
 
     Write-Host `
-        "  LANGUAGE" `
+        "  BAHASA" `
         -ForegroundColor DarkGray
 
-    Write-Host `
-        "  $Language" `
-        -ForegroundColor White
+    if ($Language -eq "id-id") {
+
+        Write-Host `
+            "  Bahasa Indonesia" `
+            -ForegroundColor White
+    }
+    else {
+
+        Write-Host `
+            "  English" `
+            -ForegroundColor White
+    }
 
     Write-Host ""
 
     Write-Host `
-        "  APPLICATIONS" `
+        "  APLIKASI" `
         -ForegroundColor DarkGray
 
     $AppLabels = @{
@@ -1547,11 +1555,11 @@ function Show-Configuration {
     Write-Host ""
 
     Write-Host `
-        "  ACTIVATION" `
+        "  AKTIVASI" `
         -ForegroundColor DarkGray
 
     Write-Host `
-        "  Not performed by RGOAD" `
+        "  Tidak dilakukan oleh RGOAD." `
         -ForegroundColor Yellow
 
     Write-Host ""
@@ -1568,7 +1576,7 @@ function Show-Configuration {
         -ForegroundColor Green
 
     Write-Host `
-        "Continue installation" `
+        "Lanjutkan instalasi" `
         -ForegroundColor White
 
     Write-Host `
@@ -1577,7 +1585,7 @@ function Show-Configuration {
         -ForegroundColor Red
 
     Write-Host `
-        "Cancel" `
+        "Batalkan" `
         -ForegroundColor White
 
     Write-Host ""
@@ -1585,10 +1593,9 @@ function Show-Configuration {
     while ($true) {
 
         $Confirmation = Read-Host `
-            "  › Continue"
+            "  › Lanjutkan"
 
         if ($Confirmation -match "^[Yy]$") {
-
             return
         }
 
@@ -1597,7 +1604,7 @@ function Show-Configuration {
             Write-Host ""
 
             Write-Info `
-                "Installation cancelled."
+                "Instalasi dibatalkan."
 
             exit 0
         }
@@ -1608,24 +1615,24 @@ function Show-Configuration {
 }
 
 # ============================================================
-# DOWNLOAD ODT
+# DOWNLOAD ODT MICROSOFT
 # ============================================================
 
 function Get-ODT {
 
     Show-Step `
-        -Number 6 `
+        -Number 5 `
         -Total 7 `
         -Title "MICROSOFT ODT" `
-        -Description "Downloading official Office Deployment Tool."
+        -Description "Mengunduh Office Deployment Tool resmi Microsoft."
 
     Write-Info `
-        "Mencari download link ODT resmi Microsoft..."
+        "Mencari link Office Deployment Tool resmi Microsoft..."
 
     Write-Host ""
 
     Write-Host `
-        "  Source:" `
+        "  Sumber:" `
         -ForegroundColor DarkGray
 
     Write-Host `
@@ -1694,18 +1701,18 @@ function Get-ODT {
         ) {
 
             throw `
-                "Sumber ODT bukan domain Microsoft."
+                "Sumber Office Deployment Tool bukan domain Microsoft."
         }
 
         Write-Sukses `
-            "Official Microsoft ODT link found."
+            "Link resmi Microsoft ditemukan."
 
         $ODTInstaller = Join-Path `
             $WorkDirectory `
             "officedeploymenttool.exe"
 
         Write-Info `
-            "Downloading Office Deployment Tool..."
+            "Mengunduh Office Deployment Tool..."
 
         Invoke-WebRequest `
             -Uri $ODTLink `
@@ -1715,7 +1722,7 @@ function Get-ODT {
         if (-not (Test-Path $ODTInstaller)) {
 
             throw `
-                "File ODT tidak ditemukan setelah download."
+                "File Office Deployment Tool tidak ditemukan setelah download."
         }
 
         $FileSize = `
@@ -1724,7 +1731,7 @@ function Get-ODT {
         if ($FileSize -lt 100000) {
 
             throw `
-                "File ODT terlalu kecil atau tidak valid."
+                "File Office Deployment Tool terlalu kecil atau tidak valid."
         }
 
         Write-Sukses `
@@ -1746,7 +1753,7 @@ function Get-ODT {
         Write-Host ""
 
         Write-Peringatan `
-            "ODT dapat diunduh manual dari Microsoft:"
+            "Office Deployment Tool dapat diunduh manual dari Microsoft:"
 
         Write-Host ""
 
@@ -1759,7 +1766,7 @@ function Get-ODT {
 }
 
 # ============================================================
-# EXTRACT ODT
+# EKSTRAK ODT
 # ============================================================
 
 function Expand-ODT {
@@ -1772,13 +1779,13 @@ function Expand-ODT {
     Show-Step `
         -Number 6 `
         -Total 7 `
-        -Title "PREPARING ODT" `
-        -Description "Extracting Office Deployment Tool."
+        -Title "MENYIAPKAN ODT" `
+        -Description "Mengekstrak Office Deployment Tool."
 
     try {
 
         Write-Info `
-            "Extracting ODT package..."
+            "Mengekstrak paket Office Deployment Tool..."
 
         $Process = Start-Process `
             -FilePath $Installer `
@@ -1792,7 +1799,7 @@ function Expand-ODT {
         if ($Process.ExitCode -ne 0) {
 
             throw `
-                "ODT gagal diekstrak. Exit Code: $($Process.ExitCode)"
+                "ODT gagal diekstrak. Kode keluar: $($Process.ExitCode)"
         }
 
         $SetupFile = Join-Path `
@@ -1806,7 +1813,7 @@ function Expand-ODT {
         }
 
         Write-Sukses `
-            "ODT berhasil diekstrak."
+            "Office Deployment Tool berhasil diekstrak."
 
         Write-Sukses `
             "setup.exe ditemukan."
@@ -1842,11 +1849,11 @@ function Download-Office {
     Show-Step `
         -Number 7 `
         -Total 7 `
-        -Title "DOWNLOADING OFFICE" `
-        -Description "Downloading Office through Microsoft ODT."
+        -Title "MENGUNDUH OFFICE" `
+        -Description "Mengunduh Microsoft Office melalui ODT."
 
     Write-Info `
-        "Office akan diunduh dari CDN Microsoft."
+        "Paket Office akan diunduh dari CDN Microsoft."
 
     Write-Host ""
 
@@ -1856,7 +1863,7 @@ function Download-Office {
     Write-Host ""
 
     Write-Info `
-        "Menjalankan ODT download process..."
+        "Menjalankan proses download ODT..."
 
     Write-Host ""
 
@@ -1876,7 +1883,7 @@ function Download-Office {
         Write-Host ""
 
         Write-Host `
-            "Exit Code: $($Process.ExitCode)" `
+            "Kode keluar: $($Process.ExitCode)" `
             -ForegroundColor Red
 
         exit 1
@@ -1889,7 +1896,7 @@ function Download-Office {
 }
 
 # ============================================================
-# INSTALL OFFICE
+# INSTAL OFFICE
 # ============================================================
 
 function Install-Office {
@@ -1902,8 +1909,8 @@ function Install-Office {
     Show-Step `
         -Number 7 `
         -Total 7 `
-        -Title "INSTALLING OFFICE" `
-        -Description "Deploying Microsoft Office using ODT."
+        -Title "MEMASANG OFFICE" `
+        -Description "Memasang Microsoft Office menggunakan ODT."
 
     Write-Peringatan `
         "Jangan matikan komputer selama proses instalasi."
@@ -1911,7 +1918,7 @@ function Install-Office {
     Write-Host ""
 
     Write-Info `
-        "Starting Office deployment..."
+        "Memulai proses pemasangan Office..."
 
     Write-Host ""
 
@@ -1931,13 +1938,13 @@ function Install-Office {
         Write-Host ""
 
         Write-Host `
-            "Exit Code: $($Process.ExitCode)" `
+            "Kode keluar: $($Process.ExitCode)" `
             -ForegroundColor Red
 
         Write-Host ""
 
         Write-Peringatan `
-            "Periksa log Office di folder TEMP Windows."
+            "Periksa log Office pada folder TEMP Windows."
 
         exit 1
     }
@@ -1949,7 +1956,7 @@ function Install-Office {
 }
 
 # ============================================================
-# FINISH
+# SELESAI
 # ============================================================
 
 function Show-Finish {
@@ -1978,7 +1985,7 @@ function Show-Finish {
         -ForegroundColor Green
 
     Write-Host `
-        "  |                DEPLOYMENT COMPLETE                    |" `
+        "  |                 INSTALASI SELESAI                      |" `
         -ForegroundColor White
 
     Write-Host `
@@ -2003,7 +2010,7 @@ function Show-Finish {
     Write-Host ""
 
     Write-Host `
-        "  Edition : " `
+        "  Edisi       : " `
         -NoNewline `
         -ForegroundColor DarkGray
 
@@ -2014,7 +2021,7 @@ function Show-Finish {
     Write-Host ""
 
     Write-Host `
-        "  Applications" `
+        "  Aplikasi" `
         -ForegroundColor DarkGray
 
     $AppLabels = @{
@@ -2041,11 +2048,11 @@ function Show-Finish {
     Write-Host ""
 
     Write-Host `
-        "  Activation" `
+        "  Aktivasi" `
         -ForegroundColor DarkGray
 
     Write-Host `
-        "  Not performed by RGOAD." `
+        "  Tidak dilakukan oleh RGOAD." `
         -ForegroundColor Yellow
 
     Write-Host ""
@@ -2067,7 +2074,7 @@ function Show-Finish {
     Write-Host ""
 
     Write-Host `
-        "  RGOAD deployment finished successfully." `
+        "  Deployment RGOAD berhasil diselesaikan." `
         -ForegroundColor Cyan
 
     Write-Host ""
@@ -2084,7 +2091,7 @@ try {
     Initialize-RGOADConsole
 
     # --------------------------------------------------------
-    # ADMIN
+    # ADMINISTRATOR
     # --------------------------------------------------------
 
     Request-Administrator
@@ -2100,23 +2107,23 @@ try {
         -ForegroundColor White
 
     Write-Host `
-        "  Version $RGOADVersion" `
+        "  Versi $RGOADVersion" `
         -ForegroundColor DarkGray
 
     Write-Host ""
 
     Write-Host `
-        "  Microsoft Office LTSC deployment utility." `
+        "  Utilitas deployment Microsoft Office LTSC." `
         -ForegroundColor Gray
 
     Write-Host `
-        "  Powered by the official Microsoft Office Deployment Tool." `
+        "  Menggunakan Office Deployment Tool resmi Microsoft." `
         -ForegroundColor Gray
 
     Write-Host ""
 
     Write-Host `
-        "  Supported:" `
+        "  DIDUKUNG" `
         -ForegroundColor DarkGray
 
     Write-Host `
@@ -2131,6 +2138,14 @@ try {
         "  [>] Professional Plus / Standard" `
         -ForegroundColor Gray
 
+    Write-Host `
+        "  [>] 32-bit / 64-bit" `
+        -ForegroundColor Gray
+
+    Write-Host `
+        "  [>] Bahasa Indonesia / English" `
+        -ForegroundColor Gray
+
     Write-Host ""
 
     Write-Host `
@@ -2140,57 +2155,45 @@ try {
     Write-Host ""
 
     Write-Info `
-        "Initializing deployment engine..."
+        "Memulai mesin deployment RGOAD..."
 
     Start-Sleep `
         -Milliseconds 500
 
     # --------------------------------------------------------
-    # STEP 1
+    # LANGKAH 1
     # --------------------------------------------------------
 
     Test-Windows
 
     # --------------------------------------------------------
-    # STEP 2
+    # LANGKAH 2
     # --------------------------------------------------------
-
-    Show-Step `
-        -Number 2 `
-        -Total 7 `
-        -Title "NETWORK CHECK" `
-        -Description "Checking Microsoft connectivity."
 
     Test-Internet
 
     # --------------------------------------------------------
-    # WORKSPACE
+    # LANGKAH 3
     # --------------------------------------------------------
-
-    Show-Step `
-        -Number 3 `
-        -Total 7 `
-        -Title "WORKSPACE" `
-        -Description "Preparing temporary deployment workspace."
 
     Initialize-WorkDirectory
 
     # --------------------------------------------------------
-    # VERSION
+    # PILIH VERSI
     # --------------------------------------------------------
 
     $OfficeVersion = `
         Select-OfficeVersion
 
     # --------------------------------------------------------
-    # EDITION
+    # PILIH EDISI
     # --------------------------------------------------------
 
     $OfficeEdition = `
         Select-OfficeEdition
 
     # --------------------------------------------------------
-    # APPLICATIONS
+    # PILIH APLIKASI
     # --------------------------------------------------------
 
     $SelectedApps = `
@@ -2199,21 +2202,21 @@ try {
             -Edition $OfficeEdition
 
     # --------------------------------------------------------
-    # ARCHITECTURE
+    # PILIH ARSITEKTUR
     # --------------------------------------------------------
 
     $Architecture = `
         Select-Architecture
 
     # --------------------------------------------------------
-    # LANGUAGE
+    # PILIH BAHASA
     # --------------------------------------------------------
 
     $Language = `
         Select-Language
 
     # --------------------------------------------------------
-    # PRODUCT
+    # PRODUCT ID
     # --------------------------------------------------------
 
     $ProductId = `
@@ -2222,7 +2225,7 @@ try {
             -Edition $OfficeEdition
 
     # --------------------------------------------------------
-    # CONFIGURATION
+    # LANGKAH 4
     # --------------------------------------------------------
 
     New-Configuration `
@@ -2234,7 +2237,7 @@ try {
         Out-Null
 
     # --------------------------------------------------------
-    # SUMMARY
+    # RINGKASAN
     # --------------------------------------------------------
 
     Show-Configuration `
@@ -2246,14 +2249,14 @@ try {
         -SelectedApps $SelectedApps
 
     # --------------------------------------------------------
-    # ODT
+    # LANGKAH 5
     # --------------------------------------------------------
 
     $ODTInstaller = `
         Get-ODT
 
     # --------------------------------------------------------
-    # EXTRACT
+    # LANGKAH 6
     # --------------------------------------------------------
 
     $SetupFile = `
@@ -2261,21 +2264,21 @@ try {
             -Installer $ODTInstaller
 
     # --------------------------------------------------------
-    # DOWNLOAD OFFICE
+    # LANGKAH 7
     # --------------------------------------------------------
 
     Download-Office `
         -SetupFile $SetupFile
 
     # --------------------------------------------------------
-    # INSTALL
+    # INSTALASI
     # --------------------------------------------------------
 
     Install-Office `
         -SetupFile $SetupFile
 
     # --------------------------------------------------------
-    # FINISH
+    # SELESAI
     # --------------------------------------------------------
 
     Show-Finish `
@@ -2309,11 +2312,11 @@ catch {
     Write-Host ""
 
     Write-Host `
-        "  Troubleshooting" `
+        "  PEMECAHAN MASALAH" `
         -ForegroundColor Yellow
 
     Write-Host `
-        "  Check the repository documentation:" `
+        "  Periksa dokumentasi repository:" `
         -ForegroundColor Gray
 
     Write-Host `

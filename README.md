@@ -1,5 +1,17 @@
 # Office Installer
 
+════════════════════════════════════════════════════════════
+   ██████╗  ██████╗  ██████╗  █████╗ ██████╗
+   ██╔══██╗██╔════╝ ██╔════╝ ██╔══██╗██╔══██╗
+   ██████╔╝██║  ███╗██║  ███╗███████║██║  ██║
+   ██╔══██╗██║   ██║██║   ██║██╔══██║██║  ██║
+   ██║  ██║╚██████╔╝╚██████╔╝██║  ██║██████╔╝
+   ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═════╝
+
+   OFFICE DEPLOYMENT SYSTEM
+   Version 1.0.0
+════════════════════════════════════════════════════════════
+
 PowerShell installer untuk melakukan deployment **Microsoft Office LTSC 2024** dan **Microsoft Office LTSC 2021** menggunakan **Microsoft Office Deployment Tool (ODT)** resmi dari Microsoft.
 
 Installer ini menyediakan antarmuka berbasis menu sehingga pengguna tidak perlu membuat konfigurasi XML ODT secara manual.
