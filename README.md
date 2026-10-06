@@ -10,49 +10,58 @@ Installer ini dibuat untuk memudahkan pengguna Windows melakukan instalasi **Off
 
 Ikuti langkah berikut untuk menjalankan installer Microsoft Office.
 
-1. Buka PowerShell sebagai Administrator
+### 1. Buka PowerShell sebagai Administrator
 
-Pada keyboard, tekan tombol Windows (⊞).
+Pada keyboard, tekan tombol **Windows (⊞)**.
 
 Kemudian ketik:
 
+```text
 PowerShell
+```
 
-Setelah Windows PowerShell muncul pada hasil pencarian:
+Setelah **Windows PowerShell** muncul pada hasil pencarian:
 
-Klik kanan Windows PowerShell
-Pilih Run as Administrator
-Jika muncul jendela User Account Control (UAC), klik Yes
+1. Klik kanan **Windows PowerShell**
+2. Pilih **Run as Administrator**
+3. Jika muncul jendela **User Account Control (UAC)**, klik **Yes**
 
-Setelah itu akan muncul jendela Windows PowerShell dengan hak Administrator.
+Setelah itu akan muncul jendela **Windows PowerShell** dengan hak Administrator.
 
-2. Copy perintah installer
+---
+
+### 2. Copy perintah installer
 
 Copy perintah berikut:
 
+```powershell
 irm https://raw.githubusercontent.com/FebrianSuban/office-installer/main/Install-Office.ps1 | iex
+```
 
 Cara menyalin:
 
-Arahkan mouse ke kotak perintah di atas.
-Klik tombol Copy yang muncul pada kotak tersebut.
-Perintah akan tersalin ke clipboard.
-3. Paste perintah ke PowerShell
+1. Arahkan mouse ke kotak perintah di atas.
+2. Klik tombol **Copy** yang muncul pada kotak tersebut.
+3. Perintah akan tersalin ke clipboard.
 
-Kembali ke jendela Windows PowerShell yang tadi dibuka sebagai Administrator.
+---
+
+### 3. Paste perintah ke PowerShell
+
+Kembali ke jendela **Windows PowerShell** yang tadi dibuka sebagai Administrator.
 
 Kemudian paste perintah yang sudah disalin.
 
 Kamu dapat melakukan paste dengan:
 
-Klik kanan di dalam jendela PowerShell, atau
-Tekan Ctrl + V
+* Klik kanan di dalam jendela PowerShell, atau
+* Tekan **Ctrl + V**
 
-Kemudian tekan Enter.
+Kemudian tekan **Enter**.
 
 Setelah itu installer akan berjalan dan menampilkan menu pilihan.
 
-Alur instalasi:
+### Alur instalasi
 
 ```text
 Download ODT
@@ -70,6 +79,9 @@ Download file Office
 Install Office
      ↓
 Selesai
+```
+
+---
 
 ## Fitur
 
@@ -96,7 +108,7 @@ Sebelum menjalankan installer, pastikan:
 * Windows 10 atau Windows 11
 * Koneksi internet aktif
 * PowerShell tersedia
-* Memiliki hak administrator saat proses instalasi
+* Memiliki hak administrator
 * Ruang penyimpanan yang cukup
 * Tidak sedang menjalankan proses instalasi Office lainnya
 
@@ -394,7 +406,7 @@ Office versi lain yang sudah terpasang dapat menyebabkan konflik.
 
 ### 4. Hak administrator
 
-Pastikan PowerShell dapat memperoleh hak administrator ketika diminta.
+Pastikan PowerShell dijalankan menggunakan **Run as Administrator**.
 
 ### 5. File log
 
