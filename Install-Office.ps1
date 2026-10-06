@@ -11,6 +11,7 @@
     Fitur:
     - Pilih Office LTSC 2024 atau LTSC 2021
     - Pilih Professional Plus atau Standard
+    - Pilih aplikasi Office yang ingin diinstal
     - Pilih arsitektur 64-bit atau 32-bit
     - Pilih bahasa Indonesia atau Inggris
     - Download ODT dari Microsoft
@@ -20,8 +21,6 @@
     - Tidak menyertakan Product Key
     - Tidak melakukan aktivasi
     - Tidak menggunakan KMS, crack, patch, atau bypass lisensi
-
-
 #>
 
 $ErrorActionPreference = "Stop"
@@ -49,6 +48,7 @@ $ConfigurationFile = Join-Path $WorkDirectory "configuration.xml"
 # ============================================================
 
 function Write-Judul {
+
     Clear-Host
 
     Write-Host ""
@@ -60,6 +60,7 @@ function Write-Judul {
 }
 
 function Write-Sukses {
+
     param(
         [string]$Pesan
     )
@@ -68,6 +69,7 @@ function Write-Sukses {
 }
 
 function Write-Info {
+
     param(
         [string]$Pesan
     )
@@ -76,6 +78,7 @@ function Write-Info {
 }
 
 function Write-Peringatan {
+
     param(
         [string]$Pesan
     )
@@ -84,6 +87,7 @@ function Write-Peringatan {
 }
 
 function Write-Gagal {
+
     param(
         [string]$Pesan
     )
@@ -92,6 +96,7 @@ function Write-Gagal {
 }
 
 function Pause-Script {
+
     Write-Host ""
     Read-Host "Tekan ENTER untuk melanjutkan"
 }
@@ -124,7 +129,10 @@ function Request-Administrator {
 
     try {
 
+        # ----------------------------------------------------
         # Jika script dijalankan sebagai file .ps1
+        # ----------------------------------------------------
+
         if ($PSCommandPath) {
 
             Start-Process `
@@ -141,24 +149,24 @@ function Request-Administrator {
             exit
         }
 
+        # ----------------------------------------------------
         # Jika script dijalankan menggunakan:
+        #
         # irm URL | iex
         #
-        # Kita download ulang script ke TEMP lalu menjalankannya
+        # Download ulang script ke TEMP lalu jalankan
         # sebagai Administrator.
+        # ----------------------------------------------------
 
-        if ([string]::IsNullOrWhiteSpace($RepositoryScriptUrl) -or
-            $RepositoryScriptUrl -like "*FebrianSuban*") {
+        if ([string]::IsNullOrWhiteSpace($RepositoryScriptUrl)) {
 
             Write-Gagal "URL repository belum dikonfigurasi."
-            Write-Host ""
-            Write-Host "Edit variabel `$RepositoryScriptUrl di Install-Office.ps1." -ForegroundColor Yellow
-            Write-Host ""
-
             exit 1
         }
 
-        $ElevatedScript = Join-Path $env:TEMP "Office-Installer-Elevated.ps1"
+        $ElevatedScript = Join-Path `
+            $env:TEMP `
+            "Office-Installer-Elevated.ps1"
 
         Write-Info "Mempersiapkan installer dengan hak Administrator..."
 
@@ -184,7 +192,10 @@ function Request-Administrator {
     catch {
 
         Write-Gagal "Gagal mendapatkan hak Administrator."
+
+        Write-Host ""
         Write-Host $_.Exception.Message -ForegroundColor Red
+        Write-Host ""
 
         exit 1
     }
@@ -231,16 +242,15 @@ function Test-Internet {
             -UseBasicParsing `
             -TimeoutSec 15
 
-        if ($Response.StatusCode -ge 200 -and $Response.StatusCode -lt 500) {
+        if ($Response.StatusCode -ge 200 -and
+            $Response.StatusCode -lt 500) {
 
             Write-Sukses "Koneksi internet tersedia."
-
         }
         else {
 
             throw "Microsoft tidak dapat diakses."
         }
-
     }
     catch {
 
@@ -268,6 +278,7 @@ function Initialize-WorkDirectory {
     if (Test-Path $WorkDirectory) {
 
         try {
+
             Remove-Item `
                 -Path $WorkDirectory `
                 -Recurse `
@@ -275,7 +286,9 @@ function Initialize-WorkDirectory {
                 -ErrorAction SilentlyContinue
         }
         catch {
-            Write-Peringatan "Folder lama tidak dapat dibersihkan sepenuhnya."
+
+            Write-Peringatan `
+                "Folder lama tidak dapat dibersihkan sepenuhnya."
         }
     }
 
@@ -311,10 +324,6 @@ function Get-ODT {
     Write-Host $MicrosoftODTPage -ForegroundColor DarkGray
     Write-Host ""
 
-    # Microsoft menggunakan halaman Download Center.
-    # Kita mengambil halaman tersebut dan mencari link
-    # executable ODT dari domain Microsoft.
-
     try {
 
         $Page = Invoke-WebRequest `
@@ -337,7 +346,7 @@ function Get-ODT {
             }
         }
 
-        # Cari file officedeploymenttool
+        # Cari file Office Deployment Tool
         $ODTLink = $Links |
             Where-Object {
                 $_ -match "officedeploymenttool"
@@ -346,21 +355,25 @@ function Get-ODT {
 
         if ([string]::IsNullOrWhiteSpace($ODTLink)) {
 
-            throw "Link Office Deployment Tool tidak ditemukan pada halaman Microsoft."
+            throw `
+                "Link Office Deployment Tool tidak ditemukan pada halaman Microsoft."
         }
 
         if ($ODTLink.StartsWith("//")) {
+
             $ODTLink = "https:$ODTLink"
         }
 
         if ($ODTLink.StartsWith("/")) {
+
             $ODTLink = "https://www.microsoft.com$ODTLink"
         }
 
-        # Pastikan link hanya berasal dari Microsoft
+        # Pastikan link berasal dari Microsoft
         $UriObject = [System.Uri]$ODTLink
 
         if ($UriObject.Host -notmatch "microsoft\.com$") {
+
             throw "Sumber ODT bukan domain Microsoft."
         }
 
@@ -378,28 +391,40 @@ function Get-ODT {
             -UseBasicParsing
 
         if (-not (Test-Path $ODTInstaller)) {
+
             throw "File ODT tidak ditemukan setelah download."
         }
 
         $FileSize = (Get-Item $ODTInstaller).Length
 
         if ($FileSize -lt 100000) {
-            throw "File ODT terlalu kecil atau download tidak valid."
+
+            throw `
+                "File ODT terlalu kecil atau download tidak valid."
         }
 
-        Write-Sukses "Office Deployment Tool berhasil diunduh."
+        Write-Sukses `
+            "Office Deployment Tool berhasil diunduh."
 
         return $ODTInstaller
     }
     catch {
 
-        Write-Gagal "Gagal mengunduh Office Deployment Tool."
+        Write-Gagal `
+            "Gagal mengunduh Office Deployment Tool."
+
         Write-Host ""
         Write-Host $_.Exception.Message -ForegroundColor Red
         Write-Host ""
 
-        Write-Host "Kamu dapat mengunduh ODT secara manual dari:" -ForegroundColor Yellow
-        Write-Host $MicrosoftODTPage -ForegroundColor Cyan
+        Write-Host `
+            "Kamu dapat mengunduh ODT secara manual dari:" `
+            -ForegroundColor Yellow
+
+        Write-Host `
+            $MicrosoftODTPage `
+            -ForegroundColor Cyan
+
         Write-Host ""
 
         exit 1
@@ -430,23 +455,31 @@ function Expand-ODT {
 
         if ($Process.ExitCode -ne 0) {
 
-            throw "ODT gagal diekstrak. Exit Code: $($Process.ExitCode)"
+            throw `
+                "ODT gagal diekstrak. Exit Code: $($Process.ExitCode)"
         }
 
-        $SetupFile = Join-Path $ODTDirectory "setup.exe"
+        $SetupFile = Join-Path `
+            $ODTDirectory `
+            "setup.exe"
 
         if (-not (Test-Path $SetupFile)) {
 
-            throw "setup.exe tidak ditemukan setelah ekstraksi."
+            throw `
+                "setup.exe tidak ditemukan setelah ekstraksi."
         }
 
-        Write-Sukses "Office Deployment Tool berhasil diekstrak."
+        Write-Sukses `
+            "Office Deployment Tool berhasil diekstrak."
 
         return $SetupFile
     }
     catch {
 
-        Write-Gagal "Gagal mengekstrak Office Deployment Tool."
+        Write-Gagal `
+            "Gagal mengekstrak Office Deployment Tool."
+
+        Write-Host ""
         Write-Host $_.Exception.Message -ForegroundColor Red
 
         exit 1
@@ -454,7 +487,7 @@ function Expand-ODT {
 }
 
 # ============================================================
-# MENU
+# MENU UMUM
 # ============================================================
 
 function Show-Menu {
@@ -470,7 +503,9 @@ function Show-Menu {
 
     for ($i = 0; $i -lt $Pilihan.Count; $i++) {
 
-        Write-Host "[$($i + 1)] $($Pilihan[$i].Label)" -ForegroundColor Gray
+        Write-Host `
+            "[$($i + 1)] $($Pilihan[$i].Label)" `
+            -ForegroundColor Gray
     }
 
     Write-Host ""
@@ -481,15 +516,20 @@ function Show-Menu {
 
         $Nomor = 0
 
-        if ([int]::TryParse($InputUser, [ref]$Nomor)) {
+        if ([int]::TryParse(
+            $InputUser,
+            [ref]$Nomor
+        )) {
 
-            if ($Nomor -ge 1 -and $Nomor -le $Pilihan.Count) {
+            if ($Nomor -ge 1 -and
+                $Nomor -le $Pilihan.Count) {
 
                 return $Pilihan[$Nomor - 1].Value
             }
         }
 
-        Write-Peringatan "Pilihan tidak valid. Masukkan nomor yang tersedia."
+        Write-Peringatan `
+            "Pilihan tidak valid. Masukkan nomor yang tersedia."
     }
 }
 
@@ -517,7 +557,7 @@ function Select-OfficeVersion {
 }
 
 # ============================================================
-# PILIH EDISI
+# PILIH EDISI OFFICE
 # ============================================================
 
 function Select-OfficeEdition {
@@ -537,6 +577,267 @@ function Select-OfficeEdition {
     return Show-Menu `
         -Judul "Pilih edisi Microsoft Office:" `
         -Pilihan $Pilihan
+}
+
+# ============================================================
+# PILIH APLIKASI OFFICE
+# ============================================================
+
+function Select-OfficeApps {
+
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Version
+    )
+
+    # --------------------------------------------------------
+    # Daftar aplikasi yang ditampilkan.
+    #
+    # Publisher hanya ditampilkan untuk LTSC 2021.
+    # Publisher tidak ditampilkan untuk LTSC 2024.
+    # --------------------------------------------------------
+
+    $OfficeApps = @(
+        [PSCustomObject]@{
+            Id = "Word"
+            Label = "Microsoft Word"
+            Description = "Untuk membuat dan mengedit dokumen."
+        }
+
+        [PSCustomObject]@{
+            Id = "Excel"
+            Label = "Microsoft Excel"
+            Description = "Untuk spreadsheet, tabel, rumus, dan data."
+        }
+
+        [PSCustomObject]@{
+            Id = "PowerPoint"
+            Label = "Microsoft PowerPoint"
+            Description = "Untuk membuat presentasi."
+        }
+
+        [PSCustomObject]@{
+            Id = "Outlook"
+            Label = "Microsoft Outlook"
+            Description = "Untuk email, kalender, dan kontak."
+        }
+
+        [PSCustomObject]@{
+            Id = "Access"
+            Label = "Microsoft Access"
+            Description = "Untuk membuat dan mengelola database."
+        }
+
+        [PSCustomObject]@{
+            Id = "OneNote"
+            Label = "Microsoft OneNote"
+            Description = "Untuk membuat catatan digital."
+        }
+    )
+
+    if ($Version -eq "2021") {
+
+        $OfficeApps += [PSCustomObject]@{
+            Id = "Publisher"
+            Label = "Microsoft Publisher"
+            Description = "Untuk membuat desain dan publikasi."
+        }
+    }
+
+    # --------------------------------------------------------
+    # Pilihan awal kosong.
+    # --------------------------------------------------------
+
+    $SelectedApps = @()
+
+    while ($true) {
+
+        Clear-Host
+
+        Write-Host ""
+        Write-Host "============================================================" -ForegroundColor Cyan
+        Write-Host "                 PILIH APLIKASI OFFICE" -ForegroundColor White
+        Write-Host "============================================================" -ForegroundColor Cyan
+        Write-Host ""
+
+        Write-Host "Pilih aplikasi yang ingin diinstal." -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "Gunakan nomor untuk mencentang atau menghapus pilihan." -ForegroundColor Gray
+        Write-Host ""
+
+        # ----------------------------------------------------
+        # Tampilkan aplikasi
+        # ----------------------------------------------------
+
+        for ($i = 0; $i -lt $OfficeApps.Count; $i++) {
+
+            $App = $OfficeApps[$i]
+
+            if ($SelectedApps -contains $App.Id) {
+
+                $Check = "[✓]"
+                $Color = "Green"
+            }
+            else {
+
+                $Check = "[ ]"
+                $Color = "Gray"
+            }
+
+            Write-Host `
+                "[$($i + 1)] $Check $($App.Label)" `
+                -ForegroundColor $Color
+
+            Write-Host `
+                "    $($App.Description)" `
+                -ForegroundColor DarkGray
+
+            Write-Host ""
+        }
+
+        # ----------------------------------------------------
+        # Nomor menu tambahan
+        # ----------------------------------------------------
+
+        $SelectAllNumber = 8
+        $ClearAllNumber = 9
+        $ContinueNumber = 0
+
+        Write-Host "------------------------------------------------------------" `
+            -ForegroundColor DarkGray
+
+        if ($SelectedApps.Count -eq $OfficeApps.Count) {
+
+            Write-Host `
+                "[$SelectAllNumber] [✓] Pilih semua aplikasi" `
+                -ForegroundColor Green
+        }
+        else {
+
+            Write-Host `
+                "[$SelectAllNumber] [ ] Pilih semua aplikasi" `
+                -ForegroundColor Gray
+        }
+
+        Write-Host `
+            "[$ClearAllNumber] [ ] Hapus semua pilihan" `
+            -ForegroundColor Yellow
+
+        Write-Host `
+            "[$ContinueNumber]     Lanjutkan" `
+            -ForegroundColor Cyan
+
+        Write-Host "------------------------------------------------------------" `
+            -ForegroundColor DarkGray
+
+        Write-Host ""
+
+        if ($SelectedApps.Count -eq 0) {
+
+            Write-Host `
+                "Belum ada aplikasi yang dipilih." `
+                -ForegroundColor Yellow
+        }
+        else {
+
+            Write-Host `
+                "Aplikasi terpilih: $($SelectedApps.Count)" `
+                -ForegroundColor Green
+        }
+
+        Write-Host ""
+
+        $InputUser = Read-Host "Pilih nomor"
+
+        # ----------------------------------------------------
+        # Lanjutkan
+        # ----------------------------------------------------
+
+        if ($InputUser -eq "0") {
+
+            if ($SelectedApps.Count -eq 0) {
+
+                Write-Host ""
+
+                Write-Peringatan `
+                    "Pilih minimal satu aplikasi sebelum melanjutkan."
+
+                Start-Sleep -Seconds 1
+
+                continue
+            }
+
+            return @($SelectedApps)
+        }
+
+        # ----------------------------------------------------
+        # Pilih semua
+        # ----------------------------------------------------
+
+        if ($InputUser -eq "8") {
+
+            $SelectedApps = @(
+                $OfficeApps | ForEach-Object {
+                    $_.Id
+                }
+            )
+
+            continue
+        }
+
+        # ----------------------------------------------------
+        # Hapus semua
+        # ----------------------------------------------------
+
+        if ($InputUser -eq "9") {
+
+            $SelectedApps = @()
+
+            continue
+        }
+
+        # ----------------------------------------------------
+        # Toggle aplikasi individual
+        # ----------------------------------------------------
+
+        $Number = 0
+
+        if ([int]::TryParse(
+            $InputUser,
+            [ref]$Number
+        )) {
+
+            if ($Number -ge 1 -and
+                $Number -le $OfficeApps.Count) {
+
+                $SelectedId = $OfficeApps[$Number - 1].Id
+
+                if ($SelectedApps -contains $SelectedId) {
+
+                    $SelectedApps = @(
+                        $SelectedApps |
+                        Where-Object {
+                            $_ -ne $SelectedId
+                        }
+                    )
+                }
+                else {
+
+                    $SelectedApps = @(
+                        $SelectedApps
+                        $SelectedId
+                    )
+                }
+
+                continue
+            }
+        }
+
+        Write-Peringatan `
+            "Pilihan tidak valid."
+
+        Start-Sleep -Seconds 1
+    }
 }
 
 # ============================================================
@@ -599,6 +900,7 @@ function Get-ProductId {
     if ($Version -eq "2024") {
 
         if ($Edition -eq "ProPlus") {
+
             return "ProPlus2024Volume"
         }
 
@@ -608,6 +910,7 @@ function Get-ProductId {
     if ($Version -eq "2021") {
 
         if ($Edition -eq "ProPlus") {
+
             return "ProPlus2021Volume"
         }
 
@@ -628,14 +931,68 @@ function Get-Channel {
     )
 
     if ($Version -eq "2024") {
+
         return "PerpetualVL2024"
     }
 
     if ($Version -eq "2021") {
+
         return "PerpetualVL2021"
     }
 
     throw "Versi Office tidak valid."
+}
+
+# ============================================================
+# MEMBUAT EXCLUDE APP XML
+# ============================================================
+
+function Get-ExcludeAppXml {
+
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Version,
+
+        [Parameter(Mandatory = $true)]
+        [array]$SelectedApps
+    )
+
+    # --------------------------------------------------------
+    # Semua aplikasi yang kita kelola melalui menu.
+    # --------------------------------------------------------
+
+    $AllApps = @(
+        "Word"
+        "Excel"
+        "PowerPoint"
+        "Outlook"
+        "Access"
+        "OneNote"
+    )
+
+    # Publisher hanya relevan untuk LTSC 2021
+    if ($Version -eq "2021") {
+
+        $AllApps += "Publisher"
+    }
+
+    $ExcludeLines = @()
+
+    foreach ($App in $AllApps) {
+
+        if ($SelectedApps -notcontains $App) {
+
+            $ExcludeLines += `
+                "      <ExcludeApp ID=`"$App`" />"
+        }
+    }
+
+    if ($ExcludeLines.Count -eq 0) {
+
+        return ""
+    }
+
+    return ($ExcludeLines -join "`r`n")
 }
 
 # ============================================================
@@ -648,7 +1005,8 @@ function New-Configuration {
         [string]$Version,
         [string]$Edition,
         [string]$Architecture,
-        [string]$Language
+        [string]$Language,
+        [array]$SelectedApps
     )
 
     $ProductId = Get-ProductId `
@@ -666,15 +1024,26 @@ function New-Configuration {
 
     Write-Info "Membuat configuration.xml..."
 
+    # --------------------------------------------------------
+    # Membentuk ExcludeApp berdasarkan pilihan user.
+    # --------------------------------------------------------
+
+    $ExcludeXml = Get-ExcludeAppXml `
+        -Version $Version `
+        -SelectedApps $SelectedApps
+
+    # --------------------------------------------------------
     # Tidak ada PIDKEY.
     # Tidak ada aktivasi.
-    # Office akan mengambil file dari CDN Microsoft.
+    # Office mengambil file dari CDN Microsoft.
+    # --------------------------------------------------------
 
     $Xml = @"
 <Configuration>
   <Add OfficeClientEdition="$Architecture" Channel="$Channel">
     <Product ID="$ProductId">
       <Language ID="$Language" />
+$ExcludeXml
     </Product>
   </Add>
 
@@ -693,7 +1062,8 @@ function New-Configuration {
         -Value $Xml `
         -Encoding UTF8
 
-    Write-Sukses "configuration.xml berhasil dibuat."
+    Write-Sukses `
+        "configuration.xml berhasil dibuat."
 
     return $ProductId
 }
@@ -709,7 +1079,8 @@ function Show-Configuration {
         [string]$Edition,
         [string]$Architecture,
         [string]$Language,
-        [string]$ProductId
+        [string]$ProductId,
+        [array]$SelectedApps
     )
 
     Write-Host ""
@@ -723,7 +1094,38 @@ function Show-Configuration {
     Write-Host "Product ID  : $ProductId"
     Write-Host "Arsitektur  : $Architecture-bit"
     Write-Host "Bahasa      : $Language"
+
+    Write-Host ""
+    Write-Host "Aplikasi yang akan diinstal:" -ForegroundColor Yellow
+
+    $AppLabels = @{
+        "Word"       = "Microsoft Word"
+        "Excel"      = "Microsoft Excel"
+        "PowerPoint" = "Microsoft PowerPoint"
+        "Outlook"    = "Microsoft Outlook"
+        "Access"     = "Microsoft Access"
+        "OneNote"    = "Microsoft OneNote"
+        "Publisher"  = "Microsoft Publisher"
+    }
+
+    foreach ($AppId in $SelectedApps) {
+
+        if ($AppLabels.ContainsKey($AppId)) {
+
+            Write-Host "  [✓] $($AppLabels[$AppId])" `
+                -ForegroundColor Green
+        }
+        else {
+
+            Write-Host "  [✓] $AppId" `
+                -ForegroundColor Green
+        }
+    }
+
+    Write-Host ""
+
     Write-Host "Aktivasi    : Tidak dilakukan oleh installer"
+
     Write-Host ""
 
     Write-Host "Catatan:" -ForegroundColor Yellow
@@ -731,12 +1133,15 @@ function Show-Configuration {
     Write-Host "Lisensi/aktivasi harus dilakukan secara sah oleh pemilik lisensi."
     Write-Host ""
 
-    $Konfirmasi = Read-Host "Lanjutkan proses instalasi? (Y/N)"
+    $Konfirmasi = Read-Host `
+        "Lanjutkan proses instalasi? (Y/N)"
 
     if ($Konfirmasi -notmatch "^[Yy]$") {
 
         Write-Host ""
-        Write-Info "Instalasi dibatalkan oleh pengguna."
+
+        Write-Info `
+            "Instalasi dibatalkan oleh pengguna."
 
         exit 0
     }
@@ -758,11 +1163,16 @@ function Download-Office {
     Write-Host "------------------------------------------------------------" -ForegroundColor DarkGray
     Write-Host ""
 
-    Write-Info "Office akan diunduh dari CDN Microsoft."
-    Write-Info "Ukuran download dapat mencapai beberapa GB."
+    Write-Info `
+        "Office akan diunduh dari CDN Microsoft."
+
+    Write-Info `
+        "Ukuran download dapat mencapai beberapa GB."
+
     Write-Host ""
 
     Write-Info "Proses download dimulai..."
+
     Write-Host ""
 
     $Process = Start-Process `
@@ -774,12 +1184,16 @@ function Download-Office {
     if ($Process.ExitCode -ne 0) {
 
         Write-Gagal "Download Office gagal."
-        Write-Host "Exit Code: $($Process.ExitCode)" -ForegroundColor Red
+
+        Write-Host `
+            "Exit Code: $($Process.ExitCode)" `
+            -ForegroundColor Red
 
         exit 1
     }
 
-    Write-Sukses "File Office berhasil diunduh."
+    Write-Sukses `
+        "File Office berhasil diunduh."
 }
 
 # ============================================================
@@ -799,8 +1213,13 @@ function Install-Office {
     Write-Host ""
 
     Write-Info "Memulai instalasi Office..."
+
     Write-Host ""
-    Write-Host "Jangan matikan komputer selama proses instalasi." -ForegroundColor Yellow
+
+    Write-Host `
+        "Jangan matikan komputer selama proses instalasi." `
+        -ForegroundColor Yellow
+
     Write-Host ""
 
     $Process = Start-Process `
@@ -811,18 +1230,26 @@ function Install-Office {
 
     if ($Process.ExitCode -ne 0) {
 
-        Write-Gagal "Instalasi Office gagal."
+        Write-Gagal `
+            "Instalasi Office gagal."
 
         Write-Host ""
-        Write-Host "Exit Code: $($Process.ExitCode)" -ForegroundColor Red
+
+        Write-Host `
+            "Exit Code: $($Process.ExitCode)" `
+            -ForegroundColor Red
+
         Write-Host ""
 
-        Write-Host "Periksa log Office di folder TEMP Windows." -ForegroundColor Yellow
+        Write-Host `
+            "Periksa log Office di folder TEMP Windows." `
+            -ForegroundColor Yellow
 
         exit 1
     }
 
-    Write-Sukses "Instalasi Office selesai."
+    Write-Sukses `
+        "Instalasi Office selesai."
 }
 
 # ============================================================
@@ -831,13 +1258,44 @@ function Install-Office {
 
 function Show-Finish {
 
+    param(
+        [array]$SelectedApps
+    )
+
     Write-Host ""
     Write-Host "============================================================" -ForegroundColor Green
     Write-Host "                 INSTALASI SELESAI" -ForegroundColor White
     Write-Host "============================================================" -ForegroundColor Green
     Write-Host ""
 
-    Write-Host "Microsoft Office berhasil dipasang." -ForegroundColor Green
+    Write-Host `
+        "Microsoft Office berhasil dipasang." `
+        -ForegroundColor Green
+
+    Write-Host ""
+
+    Write-Host "Aplikasi yang dipilih:" -ForegroundColor Yellow
+
+    $AppLabels = @{
+        "Word"       = "Microsoft Word"
+        "Excel"      = "Microsoft Excel"
+        "PowerPoint" = "Microsoft PowerPoint"
+        "Outlook"    = "Microsoft Outlook"
+        "Access"     = "Microsoft Access"
+        "OneNote"    = "Microsoft OneNote"
+        "Publisher"  = "Microsoft Publisher"
+    }
+
+    foreach ($AppId in $SelectedApps) {
+
+        if ($AppLabels.ContainsKey($AppId)) {
+
+            Write-Host `
+                "  [✓] $($AppLabels[$AppId])" `
+                -ForegroundColor Green
+        }
+    }
+
     Write-Host ""
 
     Write-Host "Penting:" -ForegroundColor Yellow
@@ -845,21 +1303,17 @@ function Show-Finish {
     Write-Host "Pastikan kamu memiliki lisensi yang sesuai untuk Office LTSC."
     Write-Host ""
 
-    Write-Host "Aplikasi yang tersedia biasanya:"
-    Write-Host "- Word"
-    Write-Host "- Excel"
-    Write-Host "- PowerPoint"
-    Write-Host "- Outlook"
-    Write-Host "- Access"
-    Write-Host "- OneNote"
-    Write-Host "- Publisher"
-    Write-Host ""
-
     Write-Host "Folder kerja installer:" -ForegroundColor Gray
-    Write-Host $WorkDirectory -ForegroundColor DarkGray
+    Write-Host `
+        $WorkDirectory `
+        -ForegroundColor DarkGray
 
     Write-Host ""
-    Write-Host "Terima kasih telah menggunakan Office Installer." -ForegroundColor Cyan
+
+    Write-Host `
+        "Terima kasih telah menggunakan Office Installer." `
+        -ForegroundColor Cyan
+
     Write-Host ""
 
     Pause-Script
@@ -871,13 +1325,27 @@ function Show-Finish {
 
 try {
 
+    # --------------------------------------------------------
+    # Administrator
+    # --------------------------------------------------------
+
     Request-Administrator
 
     Write-Judul
 
-    Write-Host "Installer resmi berbasis Office Deployment Tool." -ForegroundColor Gray
-    Write-Host "Dibuat untuk mempermudah instalasi Office LTSC di Windows." -ForegroundColor Gray
+    Write-Host `
+        "Installer resmi berbasis Office Deployment Tool." `
+        -ForegroundColor Gray
+
+    Write-Host `
+        "Dibuat untuk mempermudah instalasi Office LTSC di Windows." `
+        -ForegroundColor Gray
+
     Write-Host ""
+
+    # --------------------------------------------------------
+    # Pemeriksaan sistem
+    # --------------------------------------------------------
 
     Test-Windows
 
@@ -889,13 +1357,25 @@ try {
     # PILIHAN USER
     # --------------------------------------------------------
 
+    # 1. Versi
     $OfficeVersion = Select-OfficeVersion
 
+    # 2. Edisi
     $OfficeEdition = Select-OfficeEdition
 
+    # 3. Aplikasi
+    $SelectedApps = Select-OfficeApps `
+        -Version $OfficeVersion
+
+    # 4. Arsitektur
     $Architecture = Select-Architecture
 
+    # 5. Bahasa
     $Language = Select-Language
+
+    # --------------------------------------------------------
+    # PRODUCT ID
+    # --------------------------------------------------------
 
     $ProductId = Get-ProductId `
         -Version $OfficeVersion `
@@ -909,20 +1389,31 @@ try {
         -Version $OfficeVersion `
         -Edition $OfficeEdition `
         -Architecture $Architecture `
-        -Language $Language | Out-Null
+        -Language $Language `
+        -SelectedApps $SelectedApps |
+        Out-Null
+
+    # --------------------------------------------------------
+    # KONFIRMASI
+    # --------------------------------------------------------
 
     Show-Configuration `
         -Version $OfficeVersion `
         -Edition $OfficeEdition `
         -Architecture $Architecture `
         -Language $Language `
-        -ProductId $ProductId
+        -ProductId $ProductId `
+        -SelectedApps $SelectedApps
 
     # --------------------------------------------------------
     # DOWNLOAD ODT
     # --------------------------------------------------------
 
     $ODTInstaller = Get-ODT
+
+    # --------------------------------------------------------
+    # EKSTRAK ODT
+    # --------------------------------------------------------
 
     $SetupFile = Expand-ODT `
         -Installer $ODTInstaller
@@ -945,22 +1436,32 @@ try {
     # SELESAI
     # --------------------------------------------------------
 
-    Show-Finish
-
+    Show-Finish `
+        -SelectedApps $SelectedApps
 }
 catch {
 
     Write-Host ""
+
     Write-Host "============================================================" -ForegroundColor Red
     Write-Host "                 TERJADI KESALAHAN" -ForegroundColor White
     Write-Host "============================================================" -ForegroundColor Red
     Write-Host ""
 
-    Write-Host $_.Exception.Message -ForegroundColor Red
+    Write-Host `
+        $_.Exception.Message `
+        -ForegroundColor Red
 
     Write-Host ""
-    Write-Host "Jika masalah tetap terjadi, baca:" -ForegroundColor Yellow
-    Write-Host "docs\TROUBLESHOOTING.md" -ForegroundColor Cyan
+
+    Write-Host `
+        "Jika masalah tetap terjadi, baca:" `
+        -ForegroundColor Yellow
+
+    Write-Host `
+        "docs\TROUBLESHOOTING.md" `
+        -ForegroundColor Cyan
+
     Write-Host ""
 
     Pause-Script

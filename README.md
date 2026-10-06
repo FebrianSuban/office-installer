@@ -1,16 +1,28 @@
 # Office Installer
 
-Installer Microsoft Office berbasis **PowerShell** yang menggunakan **Microsoft Office Deployment Tool (ODT)**.
+Installer Microsoft Office berbasis **PowerShell** yang menggunakan **Microsoft Office Deployment Tool (ODT)** resmi dari Microsoft.
 
 Installer ini dibuat untuk memudahkan pengguna Windows melakukan instalasi **Office LTSC 2024** atau **Office LTSC 2021** tanpa perlu membuat file konfigurasi XML secara manual.
 
+Installer menyediakan pilihan:
+
+* Versi Office
+* Edisi Office
+* Aplikasi Office yang ingin diinstal
+* Arsitektur 64-bit atau 32-bit
+* Bahasa Indonesia atau English
+
+Installer kemudian membuat konfigurasi ODT secara otomatis dan menjalankan proses download serta instalasi Office.
+
+> **Catatan:** Project ini bukan produk resmi Microsoft dan tidak berafiliasi dengan Microsoft.
+
 ---
 
-## Cara Termudah
+# Cara Termudah
 
 Ikuti langkah berikut untuk menjalankan installer Microsoft Office.
 
-### 1. Buka PowerShell sebagai Administrator
+## 1. Buka PowerShell sebagai Administrator
 
 Pada keyboard, tekan tombol **Windows (⊞)**.
 
@@ -28,9 +40,20 @@ Setelah **Windows PowerShell** muncul pada hasil pencarian:
 
 Setelah itu akan muncul jendela **Windows PowerShell** dengan hak Administrator.
 
+### Mengapa harus Administrator?
+
+Installer membutuhkan hak Administrator untuk melakukan beberapa proses seperti:
+
+* Menjalankan Office Deployment Tool.
+* Menginstal Office.
+* Mengubah komponen Office yang diperlukan.
+* Menghapus komponen Office berbasis MSI lama jika diperlukan oleh konfigurasi ODT.
+
+Jika PowerShell tidak dijalankan sebagai Administrator, installer akan mencoba meminta hak Administrator secara otomatis.
+
 ---
 
-### 2. Copy Perintah Installer
+## 2. Copy Perintah Installer
 
 Copy perintah berikut:
 
@@ -41,12 +64,12 @@ irm https://raw.githubusercontent.com/FebrianSuban/office-installer/main/Install
 Cara menyalin:
 
 1. Arahkan mouse ke kotak perintah di atas.
-2. Klik tombol **Copy** yang muncul pada kotak tersebut.
+2. Klik tombol **Copy** yang muncul pada kotak kode.
 3. Perintah akan tersalin ke clipboard.
 
 ---
 
-### 3. Paste Perintah ke PowerShell
+## 3. Paste Perintah ke PowerShell
 
 Kembali ke jendela **Windows PowerShell** yang tadi dibuka sebagai Administrator.
 
@@ -63,64 +86,86 @@ Setelah itu installer akan berjalan dan menampilkan menu pilihan.
 
 ---
 
+# Alur Pilihan Installer
+
+Installer akan meminta beberapa pilihan secara berurutan:
+
+```text
+Versi Office
+     ↓
+Edisi Office
+     ↓
+Aplikasi Office
+     ↓
+Arsitektur Office
+     ↓
+Bahasa Office
+     ↓
+Konfirmasi
+     ↓
+Download ODT
+     ↓
+Download Office
+     ↓
+Install Office
+     ↓
+Selesai
+```
+
+Urutan ini penting karena pilihan sebelumnya menentukan pilihan konfigurasi berikutnya.
+
+---
+
 # Panduan Menu Installer
 
 Jika kamu belum pernah menggunakan installer seperti ini, jangan khawatir.
 
-Installer akan meminta beberapa pilihan. Setiap pilihan akan menentukan konfigurasi Office yang akan dipasang di komputer.
+Installer menggunakan menu sederhana berbasis angka.
 
-Secara umum, pilihan yang akan ditampilkan adalah:
+Kamu cukup memasukkan nomor pilihan kemudian menekan **Enter**.
+
+Contohnya:
 
 ```text
-1. Versi Office
-2. Edisi Office
-3. Arsitektur Office
-4. Bahasa Office
-5. Konfirmasi instalasi
+Pilih nomor: 1
 ```
-
-Berikut penjelasan masing-masing pilihan.
 
 ---
 
-## 1. Pilih Versi Office
+# 1. Pilih Versi Office
 
-Installer akan menampilkan menu seperti:
+Pertama installer akan meminta versi Office.
+
+Contohnya:
 
 ```text
-========================================
-          PILIH VERSI OFFICE
-========================================
+Pilih versi Microsoft Office:
 
 [1] Office LTSC 2024
 [2] Office LTSC 2021
 
-[0] Kembali
-
-Pilihan:
+Pilih nomor:
 ```
 
-### Apa maksudnya?
-
-Versi Office menentukan **generasi Office** yang akan dipasang.
-
-Installer mendukung:
+Tersedia:
 
 * Office LTSC 2024
 * Office LTSC 2021
 
+## Apa maksud versi Office?
+
+Versi menentukan generasi Office yang akan dipasang.
+
 ### Office LTSC 2024
 
-Office LTSC 2024 adalah versi yang lebih baru dibandingkan Office LTSC 2021.
+Office LTSC 2024 adalah versi LTSC yang lebih baru.
 
 Pilih **Office LTSC 2024** jika:
 
 * Kamu melakukan instalasi baru.
-* Tidak memiliki kebutuhan khusus terhadap Office 2021.
-* Ingin menggunakan versi LTSC yang lebih baru.
-* Komputer menggunakan Windows 10 atau Windows 11 yang kompatibel.
-
-Jika kamu tidak tahu harus memilih versi yang mana, **LTSC 2024 dapat menjadi pilihan untuk instalasi baru**, selama sesuai dengan lisensi yang kamu miliki.
+* Tidak memiliki kebutuhan khusus terhadap Office LTSC 2021.
+* Organisasi atau lingkungan kerja menggunakan LTSC 2024.
+* Lisensi yang kamu miliki sesuai dengan Office LTSC 2024.
 
 Contoh:
 
@@ -128,7 +173,7 @@ Contoh:
 [1] Office LTSC 2024
 [2] Office LTSC 2021
 
-Pilihan: 1
+Pilih nomor: 1
 ```
 
 ### Office LTSC 2021
@@ -137,10 +182,10 @@ Office LTSC 2021 merupakan versi LTSC sebelumnya.
 
 Pilih **Office LTSC 2021** jika:
 
-* Kamu memang membutuhkan Office 2021.
-* Organisasi atau lingkungan kerja kamu menggunakan Office LTSC 2021.
-* Kamu memiliki lisensi untuk Office LTSC 2021.
-* Ada kebutuhan kompatibilitas tertentu dengan lingkungan yang sudah menggunakan Office 2021.
+* Kamu memang membutuhkan Office LTSC 2021.
+* Organisasi atau lingkungan kerja menggunakan Office LTSC 2021.
+* Kamu memiliki lisensi Office LTSC 2021.
+* Ada kebutuhan kompatibilitas tertentu dengan lingkungan yang sudah menggunakan Office LTSC 2021.
 
 Contoh:
 
@@ -148,44 +193,40 @@ Contoh:
 [1] Office LTSC 2024
 [2] Office LTSC 2021
 
-Pilihan: 2
+Pilih nomor: 2
 ```
 
-### Jika tidak tahu pilih yang mana
+## Jika tidak tahu pilih yang mana
 
 Gunakan panduan sederhana:
 
 ```text
-Ingin instalasi LTSC yang lebih baru?
-            ↓
-       Office LTSC 2024
+Ingin menggunakan versi LTSC yang lebih baru?
+                ↓
+          Office LTSC 2024
 
 Membutuhkan Office LTSC 2021?
-            ↓
-       Office LTSC 2021
+                ↓
+          Office LTSC 2021
 ```
 
-**Penting:** versi Office tetap harus sesuai dengan lisensi yang kamu miliki.
+> **Penting:** versi Office harus sesuai dengan lisensi yang kamu miliki.
 
 ---
 
 # 2. Pilih Edisi Office
 
-Setelah memilih versi Office, installer akan meminta pilihan edisi.
+Setelah memilih versi, installer akan meminta edisi Office.
 
 Contohnya:
 
 ```text
-========================================
-           PILIH EDISI OFFICE
-========================================
+Pilih edisi Microsoft Office:
 
 [1] Professional Plus
 [2] Standard
 
-[0] Kembali
-
-Pilihan:
+Pilih nomor:
 ```
 
 Tersedia dua pilihan:
@@ -193,15 +234,15 @@ Tersedia dua pilihan:
 * Professional Plus
 * Standard
 
-### Professional Plus
+## Professional Plus
 
-Professional Plus merupakan edisi Office yang ditujukan untuk deployment volume dan menyediakan paket aplikasi yang lebih lengkap dibandingkan edisi Standard dalam konfigurasi yang didukung.
+Professional Plus merupakan edisi Office yang ditujukan untuk deployment volume.
 
 Pilih **Professional Plus** jika:
 
 * Lisensi yang kamu miliki memang untuk Professional Plus.
 * Organisasi atau perusahaan menggunakan Professional Plus.
-* Kamu membutuhkan aplikasi Office yang tersedia pada edisi tersebut.
+* Kamu membutuhkan aplikasi yang tersedia pada edisi tersebut.
 
 Contoh:
 
@@ -209,10 +250,10 @@ Contoh:
 [1] Professional Plus
 [2] Standard
 
-Pilihan: 1
+Pilih nomor: 1
 ```
 
-### Standard
+## Standard
 
 Standard merupakan edisi Office lainnya yang tersedia untuk deployment volume.
 
@@ -228,20 +269,22 @@ Contoh:
 [1] Professional Plus
 [2] Standard
 
-Pilihan: 2
+Pilih nomor: 2
 ```
 
-### Jangan memilih berdasarkan nama saja
+## Jangan memilih berdasarkan nama saja
 
 Hal yang sangat penting:
 
 **Professional Plus bukan berarti otomatis cocok untuk semua orang.**
 
-Begitu juga **Standard bukan berarti Office yang "lebih jelek".**
+Begitu juga:
+
+**Standard bukan berarti Office yang "lebih jelek".**
 
 Edisi harus disesuaikan dengan **jenis lisensi yang kamu miliki**.
 
-Jika kamu memiliki lisensi:
+Jika lisensi kamu adalah:
 
 ```text
 Professional Plus
@@ -253,7 +296,7 @@ gunakan:
 Professional Plus
 ```
 
-Jika kamu memiliki lisensi:
+Jika lisensi kamu adalah:
 
 ```text
 Standard
@@ -267,24 +310,376 @@ Standard
 
 ---
 
-# 3. Pilih Arsitektur Office
+# 3. Pilih Aplikasi Office
 
-Selanjutnya installer akan menampilkan:
+Setelah memilih edisi, installer akan meminta aplikasi Office yang ingin diinstal.
+
+Ini merupakan fitur penting pada installer versi terbaru.
+
+Contoh menu:
 
 ```text
-========================================
-        PILIH ARSITEKTUR OFFICE
-========================================
+============================================================
+                 PILIH APLIKASI OFFICE
+============================================================
 
-[1] 64-bit
-[2] 32-bit
+Pilih aplikasi yang ingin diinstal.
 
-[0] Kembali
+Gunakan nomor untuk mencentang atau menghapus pilihan.
 
-Pilihan:
+[1] [ ] Microsoft Word
+    Untuk membuat dan mengedit dokumen.
+
+[2] [ ] Microsoft Excel
+    Untuk spreadsheet, tabel, rumus, dan data.
+
+[3] [ ] Microsoft PowerPoint
+    Untuk membuat presentasi.
+
+[4] [ ] Microsoft Outlook
+    Untuk email, kalender, dan kontak.
+
+[5] [ ] Microsoft Access
+    Untuk membuat dan mengelola database.
+
+[6] [ ] Microsoft OneNote
+    Untuk membuat catatan digital.
+
+------------------------------------------------------------
+[8] [ ] Pilih semua aplikasi
+[9] [ ] Hapus semua pilihan
+[0]     Lanjutkan
+------------------------------------------------------------
+
+Pilih nomor:
 ```
 
-Pilihan ini menentukan arsitektur Office yang akan dipasang.
+## Bagaimana cara memilih aplikasi?
+
+Masukkan nomor aplikasi yang ingin dipilih.
+
+Misalnya ingin memilih Word:
+
+```text
+Pilih nomor: 1
+```
+
+Tampilannya kemudian berubah menjadi:
+
+```text
+[1] [✓] Microsoft Word
+```
+
+Tanda:
+
+```text
+[✓]
+```
+
+berarti aplikasi tersebut dipilih.
+
+Jika menekan nomor yang sama lagi, pilihan akan dibatalkan:
+
+```text
+[1] [ ]
+```
+
+Jadi menu ini menggunakan sistem **toggle**.
+
+---
+
+# Daftar Aplikasi
+
+## Microsoft Word
+
+```text
+Microsoft Word
+```
+
+Digunakan untuk:
+
+* Membuat dokumen.
+* Mengedit dokumen.
+* Membuat surat.
+* Membuat laporan.
+* Membuat tugas.
+* Membuat dokumen dengan format teks dan gambar.
+
+Jika sering membuat dokumen, Word biasanya merupakan salah satu aplikasi utama.
+
+---
+
+## Microsoft Excel
+
+```text
+Microsoft Excel
+```
+
+Digunakan untuk:
+
+* Spreadsheet.
+* Tabel.
+* Perhitungan.
+* Rumus.
+* Pengolahan data.
+* Grafik.
+* Analisis data.
+
+Excel sangat berguna untuk pekerjaan administrasi, keuangan, data, dan pekerjaan kantor lainnya.
+
+---
+
+## Microsoft PowerPoint
+
+```text
+Microsoft PowerPoint
+```
+
+Digunakan untuk:
+
+* Membuat presentasi.
+* Membuat slide.
+* Menambahkan gambar.
+* Menambahkan diagram.
+* Membuat materi presentasi.
+
+PowerPoint biasanya digunakan untuk presentasi sekolah, kuliah, pekerjaan, maupun organisasi.
+
+---
+
+## Microsoft Outlook
+
+```text
+Microsoft Outlook
+```
+
+Digunakan untuk:
+
+* Email.
+* Kalender.
+* Kontak.
+* Pengelolaan komunikasi dan jadwal.
+
+Outlook lebih berguna untuk pengguna yang memang membutuhkan aplikasi email dan kalender desktop.
+
+---
+
+## Microsoft Access
+
+```text
+Microsoft Access
+```
+
+Digunakan untuk:
+
+* Membuat database.
+* Mengelola database.
+* Membuat tabel.
+* Membuat form.
+* Membuat query.
+* Membuat aplikasi database sederhana.
+
+Access lebih cocok untuk pengguna yang membutuhkan database desktop.
+
+---
+
+## Microsoft OneNote
+
+```text
+Microsoft OneNote
+```
+
+Digunakan untuk:
+
+* Membuat catatan digital.
+* Menyimpan catatan.
+* Membuat notebook.
+* Menyusun informasi dan catatan.
+
+---
+
+## Microsoft Publisher
+
+Microsoft Publisher dapat dipilih pada konfigurasi **Office LTSC 2021** yang didukung oleh installer.
+
+Publisher digunakan untuk membuat:
+
+* Brosur.
+* Pamflet.
+* Kartu.
+* Publikasi sederhana.
+* Layout dokumen.
+
+Untuk **Office LTSC 2024**, Publisher tidak ditampilkan pada menu installer.
+
+---
+
+# Pilih Semua Aplikasi
+
+Jika ingin memasang semua aplikasi yang tersedia pada menu, gunakan:
+
+```text
+[8] [✓] Pilih semua aplikasi
+```
+
+Contohnya:
+
+```text
+[1] [✓] Microsoft Word
+[2] [✓] Microsoft Excel
+[3] [✓] Microsoft PowerPoint
+[4] [✓] Microsoft Outlook
+[5] [✓] Microsoft Access
+[6] [✓] Microsoft OneNote
+```
+
+Pada LTSC 2021, Publisher juga akan ikut dipilih apabila tersedia pada daftar.
+
+---
+
+# Hapus Semua Pilihan
+
+Jika ingin membatalkan seluruh pilihan aplikasi, gunakan:
+
+```text
+[9] [ ] Hapus semua pilihan
+```
+
+Semua aplikasi akan kembali menjadi:
+
+```text
+[ ] Microsoft Word
+[ ] Microsoft Excel
+[ ] Microsoft PowerPoint
+...
+```
+
+Setelah itu kamu dapat memilih kembali aplikasi yang dibutuhkan.
+
+---
+
+# Lanjutkan
+
+Jika sudah selesai memilih aplikasi, gunakan:
+
+```text
+[0] Lanjutkan
+```
+
+Installer **tidak akan mengizinkan proses dilanjutkan jika belum ada aplikasi yang dipilih**.
+
+Contohnya jika belum memilih apa pun:
+
+```text
+Belum ada aplikasi yang dipilih.
+
+Pilih nomor:
+```
+
+Kamu harus memilih minimal satu aplikasi.
+
+---
+
+# Contoh Pemilihan Aplikasi
+
+Misalnya kamu hanya membutuhkan:
+
+* Word
+* Excel
+* PowerPoint
+
+Pilih:
+
+```text
+Pilih nomor: 1
+Pilih nomor: 2
+Pilih nomor: 3
+```
+
+Hasilnya:
+
+```text
+[1] [✓] Microsoft Word
+[2] [✓] Microsoft Excel
+[3] [✓] Microsoft PowerPoint
+[4] [ ] Microsoft Outlook
+[5] [ ] Microsoft Access
+[6] [ ] Microsoft OneNote
+```
+
+Kemudian:
+
+```text
+[0] Lanjutkan
+```
+
+Installer hanya akan mengonfigurasi aplikasi yang dipilih dan mengecualikan aplikasi lainnya melalui konfigurasi ODT.
+
+---
+
+# Mengapa Ada Pilihan Aplikasi?
+
+Fitur ini berguna jika kamu tidak ingin memasang seluruh aplikasi Office.
+
+Misalnya komputer hanya digunakan untuk:
+
+```text
+Word
+Excel
+PowerPoint
+```
+
+Maka kamu tidak perlu memilih:
+
+```text
+Outlook
+Access
+OneNote
+```
+
+Ini dapat membantu mengurangi aplikasi yang dipasang dan menyesuaikan instalasi dengan kebutuhan pengguna.
+
+---
+
+# Bagaimana Installer Menerapkan Pilihan Aplikasi?
+
+Installer menggunakan fitur konfigurasi resmi Office Deployment Tool:
+
+```xml
+<ExcludeApp ID="NamaAplikasi" />
+```
+
+Contohnya jika pengguna hanya memilih Word, Excel, dan PowerPoint:
+
+```xml
+<Product ID="ProPlus2024Volume">
+  <Language ID="id-id" />
+  <ExcludeApp ID="Outlook" />
+  <ExcludeApp ID="Access" />
+  <ExcludeApp ID="OneNote" />
+</Product>
+```
+
+Dengan demikian, installer tidak perlu membuat installer Office terpisah untuk setiap kombinasi aplikasi.
+
+Script hanya membuat konfigurasi ODT berdasarkan pilihan pengguna.
+
+---
+
+# 4. Pilih Arsitektur Office
+
+Setelah memilih aplikasi, installer akan meminta arsitektur Office.
+
+Contohnya:
+
+```text
+Pilih arsitektur Office:
+
+[1] 64-bit (disarankan untuk Windows modern)
+[2] 32-bit
+
+Pilih nomor:
+```
 
 Tersedia:
 
@@ -295,11 +690,11 @@ Tersedia:
 
 ## Apa itu 64-bit dan 32-bit?
 
-64-bit dan 32-bit adalah **arsitektur perangkat lunak**.
+64-bit dan 32-bit merupakan **arsitektur perangkat lunak**.
 
 Ini berbeda dengan kapasitas RAM.
 
-Misalnya komputer kamu memiliki:
+Misalnya komputer memiliki:
 
 ```text
 RAM 8 GB
@@ -307,11 +702,15 @@ RAM 8 GB
 
 Bukan berarti Office harus menggunakan "8-bit".
 
-Office tetap memilih:
+Office tetap menggunakan:
 
 ```text
 64-bit
-atau
+```
+
+atau:
+
+```text
 32-bit
 ```
 
@@ -319,7 +718,7 @@ atau
 
 ## 64-bit
 
-Untuk kebanyakan komputer Windows modern, **Office 64-bit merupakan pilihan yang disarankan**, terutama jika sistem Windows kamu menggunakan arsitektur 64-bit.
+Untuk kebanyakan komputer Windows modern, Office 64-bit merupakan pilihan yang umum dan disarankan apabila sistem Windows yang digunakan adalah 64-bit.
 
 Pilih 64-bit jika:
 
@@ -337,7 +736,8 @@ Windows 11
 RAM 8 GB
 CPU modern
 
-↓
+        ↓
+
 Office 64-bit
 ```
 
@@ -358,7 +758,7 @@ Jadi jangan memilih 32-bit hanya karena RAM komputer kecil.
 
 ---
 
-## Cara Mengetahui Windows 64-bit atau 32-bit
+# Cara Mengetahui Windows 64-bit atau 32-bit
 
 Ikuti langkah berikut:
 
@@ -371,22 +771,35 @@ Contoh:
 
 ```text
 System type:
+
 64-bit operating system, x64-based processor
 ```
 
 Artinya Windows kamu adalah 64-bit.
 
-Maka umumnya pilih:
+Maka umumnya kamu dapat memilih:
 
 ```text
 [1] 64-bit
 ```
 
+Jika tertulis:
+
+```text
+32-bit operating system
+```
+
+maka pilih:
+
+```text
+[2] 32-bit
+```
+
 ---
 
-## Rekomendasi Sederhana
+# Rekomendasi Sederhana Arsitektur
 
-Jika komputer menggunakan Windows 10 atau Windows 11 64-bit dan tidak memiliki kebutuhan khusus:
+Jika komputer menggunakan Windows 10 atau Windows 11 64-bit dan tidak memiliki kebutuhan khusus terhadap Office 32-bit:
 
 ```text
 Pilih: 64-bit
@@ -394,24 +807,23 @@ Pilih: 64-bit
 
 ---
 
-# 4. Pilih Bahasa Office
+# 5. Pilih Bahasa Office
 
-Selanjutnya installer akan menampilkan:
+Selanjutnya installer akan menampilkan pilihan bahasa.
 
 ```text
-========================================
-          PILIH BAHASA OFFICE
-========================================
+Pilih bahasa Office:
 
 [1] Bahasa Indonesia
 [2] English
 
-[0] Kembali
-
-Pilihan:
+Pilih nomor:
 ```
 
-Pilihan ini menentukan bahasa antarmuka Office.
+Tersedia:
+
+* Bahasa Indonesia
+* English
 
 ---
 
@@ -423,9 +835,9 @@ Pilih:
 [1] Bahasa Indonesia
 ```
 
-Jika kamu ingin menggunakan Office dalam bahasa Indonesia.
+Jika kamu ingin menggunakan antarmuka Office dalam bahasa Indonesia.
 
-Contohnya menu Office akan menggunakan istilah seperti:
+Contoh menu dapat menggunakan istilah seperti:
 
 ```text
 File
@@ -436,7 +848,7 @@ Tinjau
 Tampilan
 ```
 
-Pilihan ini cocok jika kamu lebih nyaman menggunakan bahasa Indonesia.
+Pilihan ini cocok jika kamu lebih nyaman menggunakan Office dalam bahasa Indonesia.
 
 ---
 
@@ -450,7 +862,7 @@ Pilih:
 
 Jika kamu terbiasa menggunakan Office dalam bahasa Inggris.
 
-Contohnya:
+Contoh:
 
 ```text
 File
@@ -465,30 +877,29 @@ Pilihan ini juga cocok jika kamu sering mengikuti tutorial Office berbahasa Ingg
 
 ---
 
-# 5. Konfirmasi Instalasi
+# 6. Konfirmasi Instalasi
 
-Setelah semua pilihan selesai, installer akan menampilkan ringkasan.
+Setelah semua pilihan selesai, installer akan menampilkan ringkasan konfigurasi.
 
 Contohnya:
 
 ```text
-========================================
-        KONFIRMASI INSTALASI
-========================================
+============================================================
+                    KONFIGURASI
+============================================================
 
 Versi       : Office LTSC 2024
-Edisi       : Professional Plus
+Edisi       : ProPlus
+Product ID  : ProPlus2024Volume
 Arsitektur  : 64-bit
-Bahasa      : Bahasa Indonesia
+Bahasa      : id-id
 
-========================================
+Aplikasi yang akan diinstal:
+  [✓] Microsoft Word
+  [✓] Microsoft Excel
+  [✓] Microsoft PowerPoint
 
-Apakah konfigurasi sudah benar?
-
-[Y] Ya, lanjutkan instalasi
-[N] Tidak, kembali ke menu
-
-Pilihan:
+Aktivasi    : Tidak dilakukan oleh installer
 ```
 
 Periksa semua informasi sebelum melanjutkan.
@@ -498,11 +909,18 @@ Pastikan:
 ```text
 Versi       → sesuai yang diinginkan
 Edisi       → sesuai dengan lisensi
+Aplikasi    → sesuai kebutuhan
 Arsitektur  → sesuai dengan Windows
-Bahasa      → sesuai dengan kebutuhan
+Bahasa      → sesuai kebutuhan
 ```
 
-Jika sudah benar, pilih:
+Kemudian installer akan bertanya:
+
+```text
+Lanjutkan proses instalasi? (Y/N):
+```
+
+Jika semua sudah benar, masukkan:
 
 ```text
 Y
@@ -510,121 +928,209 @@ Y
 
 Kemudian tekan **Enter**.
 
-Installer akan mulai melakukan proses instalasi.
+Jika ingin membatalkan, masukkan:
+
+```text
+N
+```
 
 ---
 
-# Contoh Konfigurasi untuk Pengguna Umum
+# Contoh Konfigurasi
 
-Jika kamu menggunakan komputer Windows modern dan tidak tahu harus memilih arsitektur apa, contoh konfigurasi yang umum adalah:
+Misalnya pengguna ingin:
 
 ```text
 Versi       : Office LTSC 2024
-Edisi       : Sesuai dengan lisensi
+Edisi       : Professional Plus
+Aplikasi    : Word + Excel + PowerPoint
 Arsitektur  : 64-bit
 Bahasa      : Bahasa Indonesia
 ```
 
-Contoh proses:
+Maka proses pemilihannya kira-kira:
 
 ```text
-========================================
-        MICROSOFT OFFICE INSTALLER
-========================================
-
-Pilih versi Office:
+Pilih versi Microsoft Office:
 
 [1] Office LTSC 2024
 [2] Office LTSC 2021
 
-Pilihan: 1
+Pilih nomor: 1
+```
 
+Kemudian:
 
-Pilih edisi Office:
+```text
+Pilih edisi Microsoft Office:
 
 [1] Professional Plus
 [2] Standard
 
-Pilihan: 1
+Pilih nomor: 1
+```
 
+Kemudian aplikasi:
 
-Pilih arsitektur:
+```text
+[1] [ ] Microsoft Word
+[2] [ ] Microsoft Excel
+[3] [ ] Microsoft PowerPoint
+[4] [ ] Microsoft Outlook
+[5] [ ] Microsoft Access
+[6] [ ] Microsoft OneNote
 
-[1] 64-bit
+[8] [ ] Pilih semua aplikasi
+[9] [ ] Hapus semua pilihan
+[0]     Lanjutkan
+
+Pilih nomor: 1
+Pilih nomor: 2
+Pilih nomor: 3
+Pilih nomor: 0
+```
+
+Kemudian:
+
+```text
+Pilih arsitektur Office:
+
+[1] 64-bit (disarankan untuk Windows modern)
 [2] 32-bit
 
-Pilihan: 1
+Pilih nomor: 1
+```
 
+Kemudian:
 
-Pilih bahasa:
+```text
+Pilih bahasa Office:
 
 [1] Bahasa Indonesia
 [2] English
 
-Pilihan: 1
-
-
-========================================
-        KONFIRMASI INSTALASI
-========================================
-
-Versi       : Office LTSC 2024
-Edisi       : Professional Plus
-Arsitektur  : 64-bit
-Bahasa      : Bahasa Indonesia
-
-Lanjutkan instalasi? [Y/N]: Y
+Pilih nomor: 1
 ```
 
-**Perhatian:** contoh di atas bukan berarti semua pengguna harus memilih Professional Plus. Edisi Office harus disesuaikan dengan lisensi yang dimiliki.
+Kemudian installer menampilkan konfigurasi:
+
+```text
+============================================================
+                    KONFIGURASI
+============================================================
+
+Versi       : Office LTSC 2024
+Edisi       : ProPlus
+Product ID  : ProPlus2024Volume
+Arsitektur  : 64-bit
+Bahasa      : id-id
+
+Aplikasi yang akan diinstal:
+  [✓] Microsoft Word
+  [✓] Microsoft Excel
+  [✓] Microsoft PowerPoint
+
+Aktivasi    : Tidak dilakukan oleh installer
+
+Lanjutkan proses instalasi? (Y/N):
+```
+
+Masukkan:
+
+```text
+Y
+```
 
 ---
 
 # Proses Setelah Konfirmasi
 
-Setelah kamu memilih **Y**, installer akan menjalankan beberapa tahap secara otomatis.
-
-## Tahap 1 — Download Office Deployment Tool
-
-Installer akan mengunduh **Microsoft Office Deployment Tool (ODT)**.
-
-ODT adalah alat resmi Microsoft yang digunakan untuk melakukan deployment Office.
-
-Kamu tidak perlu mengunduh atau memasangnya secara manual.
+Setelah memilih **Y**, installer akan menjalankan beberapa tahap secara otomatis.
 
 ---
 
-## Tahap 2 — Membuat Konfigurasi
+# Tahap 1 — Download Office Deployment Tool
 
-Installer akan membuat file:
+Installer akan mengunduh **Microsoft Office Deployment Tool (ODT)** dari halaman resmi Microsoft.
+
+ODT adalah alat resmi Microsoft yang digunakan untuk melakukan deployment Office.
+
+Kamu tidak perlu mengunduh dan memasang ODT secara manual.
+
+Secara umum prosesnya:
+
+```text
+Installer
+    ↓
+Halaman Microsoft
+    ↓
+Office Deployment Tool
+    ↓
+Download
+```
+
+---
+
+# Tahap 2 — Ekstrak Office Deployment Tool
+
+Setelah ODT berhasil diunduh, installer akan mengekstrak ODT ke folder sementara.
+
+Salah satu file yang digunakan adalah:
+
+```text
+setup.exe
+```
+
+File tersebut kemudian digunakan untuk menjalankan perintah ODT.
+
+---
+
+# Tahap 3 — Membuat Configuration XML
+
+Installer membuat file:
 
 ```text
 configuration.xml
 ```
 
-File tersebut berisi konfigurasi berdasarkan pilihan kamu.
+File ini dibuat secara otomatis berdasarkan pilihan pengguna.
 
-Misalnya:
+Konfigurasinya dapat berisi:
 
 ```text
-Versi Office
-Edisi Office
-Arsitektur
-Bahasa
+Product ID
+Office version
+Edition
+Architecture
+Language
 Channel
+ExcludeApp
+Update configuration
 ```
 
-Kamu tidak perlu membuat file XML tersebut secara manual.
+Kamu tidak perlu membuat file XML secara manual.
 
 ---
 
-## Tahap 3 — Download Office
+# Tahap 4 — Download File Office
 
-ODT akan mulai mengunduh file Office.
+ODT kemudian digunakan untuk mengunduh file Office.
 
-File tersebut tidak disimpan di GitHub.
+Secara sederhana:
 
-File Office akan diunduh melalui mekanisme distribusi Microsoft yang digunakan oleh ODT.
+```text
+configuration.xml
+        ↓
+ODT /download
+        ↓
+Distribusi Microsoft
+        ↓
+File Office
+```
+
+File Office **tidak disimpan di repository GitHub**.
+
+Repository hanya menyimpan script dan konfigurasi yang diperlukan.
 
 Pada tahap ini:
 
@@ -632,14 +1138,25 @@ Pada tahap ini:
 * Jangan menutup PowerShell.
 * Jangan mematikan komputer.
 * Jangan menjalankan installer Office lain secara bersamaan.
+* Pastikan ruang penyimpanan mencukupi.
 
 Lama download bergantung pada kecepatan internet dan kondisi jaringan.
 
 ---
 
-## Tahap 4 — Install Office
+# Tahap 5 — Install Office
 
 Setelah file Office selesai diunduh, ODT akan menjalankan proses instalasi.
+
+Secara sederhana:
+
+```text
+File Office
+    ↓
+ODT /configure
+    ↓
+Instalasi Office
+```
 
 Tunggu sampai proses selesai.
 
@@ -647,11 +1164,11 @@ Jangan menutup jendela PowerShell selama proses berlangsung.
 
 ---
 
-## Tahap 5 — Selesai
+# Tahap 6 — Selesai
 
 Jika proses berhasil, installer akan memberikan informasi bahwa instalasi telah selesai.
 
-Setelah itu kamu dapat membuka aplikasi Office melalui:
+Aplikasi yang dipilih kemudian dapat dibuka melalui:
 
 ```text
 Windows
@@ -661,14 +1178,14 @@ Start Menu
 Microsoft Word
 Microsoft Excel
 Microsoft PowerPoint
-dan aplikasi Office lainnya
+dan aplikasi lain yang dipilih
 ```
 
 ---
 
-# Alur Instalasi
+# Alur Instalasi Lengkap
 
-Secara keseluruhan prosesnya:
+Secara keseluruhan:
 
 ```text
 Buka PowerShell sebagai Administrator
@@ -679,17 +1196,29 @@ Paste ke PowerShell
               ↓
 Tekan Enter
               ↓
-Download ODT
+Cek Windows
+              ↓
+Cek koneksi internet
+              ↓
+Siapkan folder kerja
               ↓
 Pilih versi Office
               ↓
 Pilih edisi Office
+              ↓
+Pilih aplikasi Office
               ↓
 Pilih arsitektur
               ↓
 Pilih bahasa
               ↓
 Konfirmasi
+              ↓
+Download ODT
+              ↓
+Ekstrak ODT
+              ↓
+Buat configuration.xml
               ↓
 Download Office
               ↓
@@ -702,23 +1231,33 @@ Selesai
 
 # Fitur
 
-* Instalasi Office LTSC 2024
-* Instalasi Office LTSC 2021
-* Pilihan Professional Plus
-* Pilihan Standard
-* Pilihan 64-bit
-* Pilihan 32-bit
-* Pilihan bahasa Indonesia
-* Pilihan bahasa English
-* Menggunakan Microsoft Office Deployment Tool (ODT)
-* File Office diunduh melalui mekanisme distribusi Microsoft
-* Tidak menyimpan installer Office berukuran besar di GitHub
-* Membuat konfigurasi ODT secara otomatis
-* Tidak membutuhkan pembuatan XML secara manual
-* Mendukung instalasi melalui satu perintah PowerShell
-* Tidak menyertakan product key
-* Tidak melakukan crack
-* Tidak melakukan bypass aktivasi
+Installer menyediakan fitur berikut:
+
+* Instalasi Office LTSC 2024.
+* Instalasi Office LTSC 2021.
+* Pilihan Professional Plus.
+* Pilihan Standard.
+* Pilihan aplikasi Office.
+* Toggle aplikasi menggunakan nomor.
+* Pilihan **Pilih semua aplikasi**.
+* Pilihan **Hapus semua pilihan**.
+* Validasi minimal satu aplikasi harus dipilih.
+* Pilihan 64-bit.
+* Pilihan 32-bit.
+* Pilihan bahasa Indonesia.
+* Pilihan bahasa English.
+* Menggunakan Microsoft Office Deployment Tool (ODT).
+* Mengunduh ODT dari Microsoft.
+* Mengunduh file Office melalui mekanisme distribusi Microsoft.
+* Tidak menyimpan installer Office berukuran besar di GitHub.
+* Membuat configuration XML secara otomatis.
+* Menggunakan `ExcludeApp` untuk aplikasi yang tidak dipilih.
+* Tidak membutuhkan pembuatan XML secara manual.
+* Mendukung instalasi melalui satu perintah PowerShell.
+* Tidak menyertakan Product Key.
+* Tidak melakukan aktivasi.
+* Tidak melakukan crack.
+* Tidak melakukan bypass lisensi.
 
 ---
 
@@ -726,12 +1265,13 @@ Selesai
 
 Sebelum menjalankan installer, pastikan:
 
-* Windows 10 atau Windows 11
-* Koneksi internet aktif
-* PowerShell tersedia
-* Memiliki hak Administrator
-* Ruang penyimpanan yang cukup
-* Tidak sedang menjalankan proses instalasi Office lainnya
+* Windows 10 atau Windows 11 yang kompatibel.
+* Koneksi internet aktif.
+* PowerShell tersedia.
+* Memiliki hak Administrator.
+* Ruang penyimpanan yang cukup.
+* Tidak sedang menjalankan proses instalasi Office lainnya.
+* Lisensi Office yang sesuai dengan produk yang akan digunakan.
 
 ---
 
@@ -755,7 +1295,13 @@ Sebelum menjalankan installer, pastikan:
 
 # Instalasi Manual
 
-Jika tidak ingin menggunakan perintah `irm | iex`, repository dapat di-clone terlebih dahulu.
+Jika tidak ingin menggunakan perintah:
+
+```powershell
+irm https://raw.githubusercontent.com/FebrianSuban/office-installer/main/Install-Office.ps1 | iex
+```
+
+repository dapat di-clone terlebih dahulu.
 
 ## 1. Clone repository
 
@@ -774,6 +1320,8 @@ cd office-installer
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\Install-Office.ps1
 ```
+
+Jika PowerShell belum memiliki hak Administrator, script akan meminta hak Administrator secara otomatis.
 
 ---
 
@@ -806,7 +1354,7 @@ office-installer/
 
 # Cara Kerja
 
-Installer menggunakan **Office Deployment Tool (ODT)** dari Microsoft.
+Installer menggunakan **Office Deployment Tool (ODT)** resmi dari Microsoft.
 
 Secara sederhana:
 
@@ -824,12 +1372,26 @@ Install-Office.ps1
 Download Office Deployment Tool
    │
    ▼
-Pilih konfigurasi Office
+Pilih versi Office
    │
-   ├── Versi
-   ├── Edisi
-   ├── Arsitektur
-   └── Bahasa
+   ▼
+Pilih edisi Office
+   │
+   ▼
+Pilih aplikasi Office
+   │
+   ├── Word
+   ├── Excel
+   ├── PowerPoint
+   ├── Outlook
+   ├── Access
+   └── OneNote
+   │
+   ▼
+Pilih arsitektur
+   │
+   ▼
+Pilih bahasa
    │
    ▼
 Membuat configuration.xml
@@ -861,13 +1423,44 @@ ODT digunakan untuk:
 * Mengunduh file instalasi Office.
 * Membaca konfigurasi XML.
 * Menentukan produk Office.
+* Menentukan edisi Office.
 * Menentukan arsitektur.
 * Menentukan bahasa.
+* Mengecualikan aplikasi yang tidak dipilih.
 * Melakukan instalasi Office.
 
 File Office **tidak disimpan di repository GitHub**.
 
 Repository hanya menyimpan script dan konfigurasi yang diperlukan.
+
+---
+
+# Konfigurasi Aplikasi
+
+Installer menggunakan konfigurasi ODT untuk menentukan aplikasi mana yang tidak perlu dipasang.
+
+Contohnya jika pengguna memilih:
+
+```text
+Word
+Excel
+PowerPoint
+```
+
+sedangkan Outlook, Access, dan OneNote tidak dipilih, installer akan membuat konfigurasi seperti:
+
+```xml
+<Product ID="ProPlus2024Volume">
+  <Language ID="id-id" />
+  <ExcludeApp ID="Outlook" />
+  <ExcludeApp ID="Access" />
+  <ExcludeApp ID="OneNote" />
+</Product>
+```
+
+Pendekatan ini menggunakan fitur konfigurasi resmi ODT.
+
+Installer tidak memodifikasi file Office dan tidak menggunakan patch atau bypass.
 
 ---
 
@@ -915,7 +1508,7 @@ File Office diunduh menggunakan **Office Deployment Tool** dan mekanisme distrib
 
 Repository ini hanya menyediakan script otomatisasi.
 
-Sebelum menjalankan perintah PowerShell dari internet, pengguna disarankan untuk memeriksa isi script terlebih dahulu.
+Sebelum menjalankan perintah PowerShell yang mengambil script dari internet, pengguna disarankan untuk memeriksa isi script terlebih dahulu.
 
 Script utama:
 
@@ -927,19 +1520,19 @@ Install-Office.ps1
 
 # Melihat Script Sebelum Menjalankan
 
-Jika ingin melihat isi script terlebih dahulu, buka:
+Jika ingin melihat isi script terlebih dahulu, buka halaman repository:
 
 ```text
 https://github.com/FebrianSuban/office-installer/blob/main/Install-Office.ps1
 ```
 
-Atau download menggunakan:
+Atau download script menggunakan:
 
 ```powershell
 Invoke-WebRequest https://raw.githubusercontent.com/FebrianSuban/office-installer/main/Install-Office.ps1 -OutFile Install-Office.ps1
 ```
 
-Kemudian buka:
+Kemudian buka menggunakan Visual Studio Code:
 
 ```powershell
 code .\Install-Office.ps1
@@ -950,6 +1543,8 @@ Jika Visual Studio Code tidak tersedia:
 ```powershell
 notepad .\Install-Office.ps1
 ```
+
+Dengan cara ini kamu dapat melihat isi script sebelum menjalankannya.
 
 ---
 
@@ -967,10 +1562,11 @@ Contohnya:
 C:\Users\<username>\AppData\Local\Temp\Office-Installer
 ```
 
-Folder tersebut digunakan untuk menyimpan sementara:
+Folder tersebut digunakan untuk menyimpan sementara beberapa file yang diperlukan selama proses, seperti:
 
 ```text
-Office Deployment Tool
+officedeploymenttool.exe
+setup.exe
 configuration.xml
 file instalasi Office
 ```
@@ -989,13 +1585,25 @@ Periksa terlebih dahulu:
 
 Pastikan komputer dapat mengakses internet.
 
+Installer perlu mengakses layanan Microsoft untuk mendapatkan ODT dan file Office.
+
 ## 2. Ruang Penyimpanan
 
 Pastikan drive sistem memiliki ruang kosong yang cukup.
 
+File Office yang diunduh dapat berukuran cukup besar.
+
 ## 3. Office yang Sudah Terpasang
 
 Office versi lain yang sudah terpasang dapat menyebabkan konflik.
+
+Installer menggunakan:
+
+```xml
+<RemoveMSI />
+```
+
+untuk menangani Office berbasis MSI lama, tetapi konflik dengan instalasi Office lain, terutama konfigurasi Click-to-Run tertentu, tetap dapat terjadi.
 
 ## 4. Hak Administrator
 
@@ -1005,7 +1613,18 @@ Pastikan PowerShell dijalankan menggunakan:
 Run as Administrator
 ```
 
-## 5. Pesan Error
+## 5. Pilihan Product dan Lisensi
+
+Pastikan:
+
+```text
+Versi Office
+Edisi Office
+```
+
+sesuai dengan lisensi yang kamu miliki.
+
+## 6. Pesan Error
 
 Perhatikan pesan error yang ditampilkan pada PowerShell.
 
@@ -1035,7 +1654,7 @@ https://raw.githubusercontent.com/FebrianSuban/office-installer/main/Install-Off
 
 # Dokumentasi
 
-Dokumentasi tambahan:
+Dokumentasi tambahan tersedia pada folder:
 
 ```text
 docs/
@@ -1044,7 +1663,7 @@ docs/
 └── TROUBLESHOOTING.md
 ```
 
-Contoh konfigurasi:
+Contoh konfigurasi tersedia pada:
 
 ```text
 config/
@@ -1063,7 +1682,7 @@ Microsoft Office merupakan produk dan merek dagang milik Microsoft Corporation.
 
 Pengguna bertanggung jawab untuk memastikan bahwa penggunaan Office memiliki lisensi yang sesuai dengan ketentuan Microsoft.
 
-Project ini tidak menyediakan product key, aktivasi ilegal, crack, atau mekanisme bypass lisensi.
+Project ini tidak menyediakan Product Key, aktivasi ilegal, crack, atau mekanisme bypass lisensi.
 
 ---
 
@@ -1081,19 +1700,19 @@ LICENSE
 
 # Sumber Resmi Microsoft
 
-Office Deployment Tool:
+## Office Deployment Tool
 
 ```text
 https://www.microsoft.com/download/details.aspx?id=49117
 ```
 
-Dokumentasi Office LTSC 2024:
+## Dokumentasi Office LTSC 2024
 
 ```text
 https://learn.microsoft.com/office/ltsc/2024/deploy
 ```
 
-Dokumentasi Office LTSC 2021:
+## Dokumentasi Office LTSC 2021
 
 ```text
 https://learn.microsoft.com/office/ltsc/2021/deploy
@@ -1105,7 +1724,7 @@ https://learn.microsoft.com/office/ltsc/2021/deploy
 
 Jika hanya ingin menginstal Office:
 
-### 1. Buka PowerShell sebagai Administrator
+## 1. Buka PowerShell sebagai Administrator
 
 Tekan:
 
@@ -1121,13 +1740,13 @@ PowerShell
 
 Klik kanan **Windows PowerShell** → **Run as Administrator** → **Yes**.
 
-### 2. Copy perintah berikut
+## 2. Copy perintah berikut
 
 ```powershell
 irm https://raw.githubusercontent.com/FebrianSuban/office-installer/main/Install-Office.ps1 | iex
 ```
 
-### 3. Paste ke PowerShell
+## 3. Paste ke PowerShell
 
 Tekan:
 
@@ -1141,12 +1760,14 @@ Kemudian tekan:
 Enter
 ```
 
-### 4. Ikuti pilihan yang ditampilkan
+## 4. Ikuti pilihan yang ditampilkan
 
 ```text
 Pilih versi
    ↓
 Pilih edisi
+   ↓
+Pilih aplikasi
    ↓
 Pilih arsitektur
    ↓
@@ -1154,11 +1775,94 @@ Pilih bahasa
    ↓
 Konfirmasi
    ↓
-Download
+Download ODT
+   ↓
+Download Office
    ↓
 Install
    ↓
 Selesai
 ```
 
-**Tidak perlu membuat XML, mengunduh ODT secara manual, atau melakukan konfigurasi secara manual.**
+**Tidak perlu membuat XML, mengunduh ODT secara manual, atau melakukan konfigurasi ODT secara manual.**
+
+---
+
+# Contoh Pilihan untuk Pengguna Umum
+
+Jika komputer menggunakan Windows modern 64-bit dan pengguna membutuhkan aplikasi Office dasar, contoh pilihan dapat berupa:
+
+```text
+Versi       : Office LTSC 2024
+Edisi       : Sesuai dengan lisensi
+Aplikasi    : Word
+              Excel
+              PowerPoint
+Arsitektur  : 64-bit
+Bahasa      : Bahasa Indonesia
+```
+
+Namun, **edisi Office tetap harus disesuaikan dengan lisensi yang dimiliki**.
+
+Tidak semua pengguna harus memilih Professional Plus.
+
+---
+
+# Ringkasan Fitur Installer Terbaru
+
+Versi installer terbaru memiliki alur:
+
+```text
+┌───────────────────────────┐
+│     Office LTSC 2024      │
+│     Office LTSC 2021      │
+└─────────────┬─────────────┘
+              ↓
+┌───────────────────────────┐
+│ Professional Plus /       │
+│ Standard                  │
+└─────────────┬─────────────┘
+              ↓
+┌───────────────────────────┐
+│     PILIH APLIKASI        │
+│                           │
+│ [✓] Word                  │
+│ [✓] Excel                 │
+│ [ ] PowerPoint            │
+│ [ ] Outlook               │
+│ [ ] Access                │
+│ [ ] OneNote               │
+│                           │
+│ [8] Pilih semua           │
+│ [9] Hapus semua            │
+│ [0] Lanjutkan             │
+└─────────────┬─────────────┘
+              ↓
+┌───────────────────────────┐
+│      64-bit / 32-bit      │
+└─────────────┬─────────────┘
+              ↓
+┌───────────────────────────┐
+│   Indonesia / English     │
+└─────────────┬─────────────┘
+              ↓
+┌───────────────────────────┐
+│        KONFIRMASI         │
+└─────────────┬─────────────┘
+              ↓
+┌───────────────────────────┐
+│       DOWNLOAD ODT        │
+└─────────────┬─────────────┘
+              ↓
+┌───────────────────────────┐
+│      DOWNLOAD OFFICE      │
+└─────────────┬─────────────┘
+              ↓
+┌───────────────────────────┐
+│       INSTALL OFFICE      │
+└─────────────┬─────────────┘
+              ↓
+┌───────────────────────────┐
+│          SELESAI           │
+└───────────────────────────┘
+```
