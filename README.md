@@ -1,16 +1,8 @@
 # Office Installer
 
-════════════════════════════════════════════════════════════
-   ██████╗  ██████╗  ██████╗  █████╗ ██████╗
-   ██╔══██╗██╔════╝ ██╔════╝ ██╔══██╗██╔══██╗
-   ██████╔╝██║  ███╗██║  ███╗███████║██║  ██║
-   ██╔══██╗██║   ██║██║   ██║██╔══██║██║  ██║
-   ██║  ██║╚██████╔╝╚██████╔╝██║  ██║██████╔╝
-   ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═════╝
-
-   OFFICE DEPLOYMENT SYSTEM
-   Version 1.0.0
-════════════════════════════════════════════════════════════
+<p align="center">
+  <img src="assets/rgoad.png" alt="RGOAD" width="700">
+</p>
 
 PowerShell installer untuk melakukan deployment **Microsoft Office LTSC 2024** dan **Microsoft Office LTSC 2021** menggunakan **Microsoft Office Deployment Tool (ODT)** resmi dari Microsoft.
 
