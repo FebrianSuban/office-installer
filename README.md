@@ -1,11 +1,11 @@
-markdown
+````markdown
 # Office Installer
 
 Installer sederhana Microsoft Office LTSC untuk Windows menggunakan
 Office Deployment Tool (ODT) resmi Microsoft.
 
 Project ini dibuat untuk mempermudah pengguna Windows di Indonesia
-melakukan instalasi Office LTSC tanpa harus membuat configuration.xml
+melakukan instalasi Office LTSC tanpa harus membuat `configuration.xml`
 secara manual.
 
 ---
@@ -23,7 +23,7 @@ Installer menyediakan pilihan:
 - Bahasa Indonesia
 - English
 
-Proses instalasi:
+### Proses Instalasi
 
 1. Download Office Deployment Tool
 2. Pilih versi Office
@@ -51,14 +51,15 @@ Office LTSC merupakan produk volume licensing.
 
 Project ini tidak menyediakan lisensi Office.
 
+---
 
-# Cara Termudah
+## Cara Termudah
 
 Buka PowerShell sebagai pengguna biasa kemudian jalankan:
 
-powershell
+```powershell
 irm https://raw.githubusercontent.com/FebrianSuban/office-installer/main/Install-Office.ps1 | iex
-
+````
 
 Setelah itu installer akan berjalan.
 
@@ -66,111 +67,118 @@ Windows mungkin akan menampilkan UAC untuk meminta hak Administrator.
 
 ---
 
-# Cara Manual
+## Cara Manual
 
 Clone repository:
 
-powershell
+```powershell
 git clone https://github.com/FebrianSuban/office-installer.git
-
+```
 
 Masuk ke folder:
 
-powershell
+```powershell
 cd office-installer
+```
 
+Jalankan installer:
 
-Jalankan:
-
-powershell
+```powershell
 powershell -ExecutionPolicy Bypass -File .\Install-Office.ps1
+```
 
+---
 
+## Office yang Didukung
 
-# Office yang Didukung
+### Office LTSC 2024
 
-## Office LTSC 2024
+#### Professional Plus
 
-Professional Plus:
-
-text
+```text
 ProPlus2024Volume
+```
 
+#### Standard
 
-Standard:
-
-text
+```text
 Standard2024Volume
+```
 
+#### Channel
 
-Channel:
-
-text
+```text
 PerpetualVL2024
+```
 
+---
 
-## Office LTSC 2021
+### Office LTSC 2021
 
-Professional Plus:
+#### Professional Plus
 
-text
+```text
 ProPlus2021Volume
+```
 
+#### Standard
 
-Standard:
-
-text
+```text
 Standard2021Volume
+```
 
+#### Channel
 
-Channel:
-
-text
+```text
 PerpetualVL2021
+```
 
+Product ID tersebut mengikuti dokumentasi deployment resmi Microsoft.
 
-Product ID tersebut mengikuti dokumentasi resmi Microsoft.
+---
 
+## Aktivasi
 
-# Aktivasi
+Installer ini **TIDAK**:
 
-Installer ini TIDAK:
-
-* memasukkan Product Key
-* melakukan aktivasi
-* menggunakan KMS ilegal
-* menggunakan crack
-* menggunakan activator
-* memodifikasi file Office
-* melakukan bypass lisensi
+* Memasukkan Product Key
+* Melakukan aktivasi
+* Menggunakan KMS ilegal
+* Menggunakan crack
+* Menggunakan activator
+* Memodifikasi file Office
+* Melakukan bypass lisensi
 
 Setelah instalasi selesai, pengguna bertanggung jawab melakukan
 aktivasi sesuai lisensi yang dimiliki.
 
-Lihat:
+Lihat dokumentasi:
 
-text
-docs/AKTIVASI.md
+[`docs/AKTIVASI.md`](docs/AKTIVASI.md)
 
+---
 
-# Office Deployment Tool
+## Office Deployment Tool
 
 Project ini menggunakan Office Deployment Tool resmi Microsoft.
 
-Microsoft Download Center:
+### Microsoft Download Center
 
 https://www.microsoft.com/download/details.aspx?id=49117
 
-Dokumentasi Microsoft:
+### Dokumentasi Office LTSC 2024
 
 https://learn.microsoft.com/office/ltsc/2024/deploy
 
+### Dokumentasi Office LTSC 2021
+
 https://learn.microsoft.com/office/ltsc/2021/deploy
 
+---
 
-# Struktur Repository
+## Struktur Repository
 
-text
+```text
 office-installer/
 │
 ├── Install-Office.ps1
@@ -190,9 +198,11 @@ office-installer/
     ├── INSTALASI.md
     ├── AKTIVASI.md
     └── TROUBLESHOOTING.md
+```
 
+---
 
-# Catatan Lisensi
+## Catatan Lisensi
 
 Project ini hanya menyediakan script deployment.
 
@@ -203,8 +213,9 @@ dan CDN Microsoft.
 
 Jangan mengunggah file instalasi Office ke repository GitHub.
 
+---
 
-# Disclaimer
+## Disclaimer
 
 Project ini bukan produk resmi Microsoft.
 
@@ -213,3 +224,45 @@ merek dagang Microsoft.
 
 Project ini hanya menyediakan script untuk membantu proses deployment.
 
+Pengguna tetap bertanggung jawab atas lisensi Microsoft Office
+yang digunakan.
+
+````
+
+### Setelah mengganti `README.md`
+
+Di PowerShell, jalankan:
+
+```powershell
+git add README.md
+git commit -m "Perbaiki README"
+git push
+````
+
+Kalau ingin memastikan hasilnya sudah benar di lokal:
+
+```powershell
+code README.md
+```
+
+Di GitHub nanti hasilnya akan tampil seperti:
+
+**Office Installer**
+
+> Installer sederhana Microsoft Office LTSC untuk Windows...
+
+dengan bagian **Features**, **Persyaratan**, **Cara Termudah**, **Struktur Repository**, dll. dan link akan menjadi clickable.
+
+**Catatan kecil:** untuk README GitHub, URL biasa seperti:
+
+```text
+https://github.com/FebrianSuban/office-installer.git
+```
+
+juga otomatis menjadi link di GitHub. Sedangkan untuk link internal seperti `docs/AKTIVASI.md`, format:
+
+```markdown
+[docs/AKTIVASI.md](docs/AKTIVASI.md)
+```
+
+adalah yang paling tepat.
