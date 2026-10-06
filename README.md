@@ -8,11 +8,47 @@ Installer ini dibuat untuk memudahkan pengguna Windows melakukan instalasi **Off
 
 ## Cara Termudah
 
-Buka **PowerShell sebagai pengguna biasa**, kemudian jalankan:
+Ikuti langkah berikut untuk menjalankan installer Microsoft Office.
 
-```powershell
+1. Buka PowerShell sebagai Administrator
+
+Pada keyboard, tekan tombol Windows (⊞).
+
+Kemudian ketik:
+
+PowerShell
+
+Setelah Windows PowerShell muncul pada hasil pencarian:
+
+Klik kanan Windows PowerShell
+Pilih Run as Administrator
+Jika muncul jendela User Account Control (UAC), klik Yes
+
+Setelah itu akan muncul jendela Windows PowerShell dengan hak Administrator.
+
+2. Copy perintah installer
+
+Copy perintah berikut:
+
 irm https://raw.githubusercontent.com/FebrianSuban/office-installer/main/Install-Office.ps1 | iex
-```
+
+Cara menyalin:
+
+Arahkan mouse ke kotak perintah di atas.
+Klik tombol Copy yang muncul pada kotak tersebut.
+Perintah akan tersalin ke clipboard.
+3. Paste perintah ke PowerShell
+
+Kembali ke jendela Windows PowerShell yang tadi dibuka sebagai Administrator.
+
+Kemudian paste perintah yang sudah disalin.
+
+Kamu dapat melakukan paste dengan:
+
+Klik kanan di dalam jendela PowerShell, atau
+Tekan Ctrl + V
+
+Kemudian tekan Enter.
 
 Setelah itu installer akan berjalan dan menampilkan menu pilihan.
 
@@ -34,11 +70,6 @@ Download file Office
 Install Office
      ↓
 Selesai
-```
-
-> **Catatan:** PowerShell akan meminta izin administrator ketika proses instalasi membutuhkan hak administrator.
-
----
 
 ## Fitur
 
