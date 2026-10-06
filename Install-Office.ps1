@@ -1,109 +1,78 @@
-powershell
 #Requires -Version 5.1
 
 <#
 .SYNOPSIS
     RGOAD Office Installer
-    Installer Microsoft Office LTSC 2024 / LTSC 2021
-    menggunakan Office Deployment Tool (ODT) resmi Microsoft.
+    Microsoft Office LTSC 2024 / LTSC 2021 Deployment Tool
 
 .DESCRIPTION
-    RGOAD Office Installer adalah installer berbasis PowerShell
-    dengan antarmuka terminal bertema RGOAD.
+    RGOAD Office Installer adalah installer PowerShell untuk
+    melakukan deployment Microsoft Office LTSC menggunakan
+    Office Deployment Tool (ODT) resmi Microsoft.
 
-    Fitur:
-    - Office LTSC 2024
-    - Office LTSC 2021
-    - Professional Plus
-    - Standard
-    - Pemilihan aplikasi sesuai edisi
-    - Pemilihan aplikasi individual
-    - Select All
-    - Clear All
-    - Arsitektur 64-bit / 32-bit
-    - Bahasa Indonesia / English
-    - Download ODT resmi Microsoft
-    - Membuat configuration.xml otomatis
-    - Download Office melalui ODT
-    - Install Office melalui ODT
-    - Tidak memasukkan Product Key
-    - Tidak melakukan aktivasi
-    - Tidak menggunakan KMS
-    - Tidak menggunakan crack
-    - Tidak menggunakan patch
-    - Tidak menggunakan loader
-    - Tidak melakukan bypass lisensi
+    Supported:
+        - Office LTSC 2024
+        - Office LTSC 2021
+        - Professional Plus
+        - Standard
+        - 64-bit
+        - 32-bit
+        - Bahasa Indonesia
+        - English
 
-.PRODUCT MATRIX
-
-    Office LTSC 2024 Standard:
-        - Word
-        - Excel
-        - PowerPoint
-        - Outlook
-        - OneNote
-
-    Office LTSC 2024 Professional Plus:
-        - Word
-        - Excel
-        - PowerPoint
-        - Outlook
-        - OneNote
-        - Access
-
-    Office LTSC 2021 Standard:
-        - Word
-        - Excel
-        - PowerPoint
-        - Outlook
-        - OneNote
-        - Publisher
-
-    Office LTSC 2021 Professional Plus:
-        - Word
-        - Excel
-        - PowerPoint
-        - Outlook
-        - OneNote
-        - Access
-        - Publisher
+    Tidak melakukan:
+        - Product Key injection
+        - Activation
+        - KMS
+        - Crack
+        - Patch
+        - Loader
+        - License bypass
 
 .NOTES
-    Theme:
-        RGOAD
-
-    Installer ini hanya menangani deployment.
-
-    Lisensi dan aktivasi Office harus dilakukan secara sah
-    menggunakan lisensi yang sesuai dengan edisi Office.
+    Project : RGOAD Office Installer
+    Version : 1.1.0
+    Theme   : RGOAD
 #>
 
 $ErrorActionPreference = "Stop"
 
 # ============================================================
-# RGOAD CONFIGURATION
+# RGOAD IDENTITY
 # ============================================================
 
 $RGOADName = "RGOAD"
-$RGOADVersion = "1.0.0"
+$RGOADVersion = "1.1.0"
 $RGOADTagline = "OFFICE DEPLOYMENT SYSTEM"
 
 # ============================================================
-# KONFIGURASI REPOSITORY
+# REPOSITORY
 # ============================================================
 
 $RepositoryScriptUrl = "https://raw.githubusercontent.com/FebrianSuban/office-installer/main/Install-Office.ps1"
 
 $MicrosoftODTPage = "https://www.microsoft.com/download/details.aspx?id=49117"
 
+# ============================================================
+# WORKSPACE
+# ============================================================
+
 $WorkDirectory = Join-Path $env:TEMP "Office-Installer"
 
-$ODTDirectory = Join-Path $WorkDirectory "ODT"
+$ODTDirectory = Join-Path `
+    $WorkDirectory `
+    "ODT"
 
-$ConfigurationFile = Join-Path $WorkDirectory "configuration.xml"
+$ConfigurationFile = Join-Path `
+    $WorkDirectory `
+    "configuration.xml"
+
+$ElevatedScript = Join-Path `
+    $env:TEMP `
+    "Office-Installer-Elevated.ps1"
 
 # ============================================================
-# WARNA TEMA RGOAD
+# RGOAD THEME
 # ============================================================
 
 $RGOADPrimary = "Cyan"
@@ -116,14 +85,39 @@ $RGOADMuted = "DarkGray"
 $RGOADText = "White"
 
 # ============================================================
-# KARAKTER UI
+# SAFE UI CHARACTERS
 # ============================================================
 
-$RGOADLine = "────────────────────────────────────────────────────────────"
-$RGOADDoubleLine = "════════════════════════════════════════════════════════════"
+$RGOADLine = "------------------------------------------------------------"
+$RGOADDoubleLine = "============================================================"
 
 # ============================================================
-# FUNGSI LOGO RGOAD
+# CONSOLE SETUP
+# ============================================================
+
+function Initialize-RGOADConsole {
+
+    try {
+
+        $Host.UI.RawUI.WindowTitle = `
+            "RGOAD Office Installer | LTSC 2024 / LTSC 2021"
+    }
+    catch {
+        # Ignore console title errors.
+    }
+
+    try {
+
+        [Console]::OutputEncoding = `
+            New-Object System.Text.UTF8Encoding($false)
+    }
+    catch {
+        # Ignore encoding errors.
+    }
+}
+
+# ============================================================
+# LOGO
 # ============================================================
 
 function Show-RGOADLogo {
@@ -131,18 +125,37 @@ function Show-RGOADLogo {
     Clear-Host
 
     Write-Host ""
-    Write-Host "  ██████╗  ██████╗  ██████╗  █████╗ ██████╗ " -ForegroundColor Cyan
-    Write-Host "  ██╔══██╗██╔════╝ ██╔════╝ ██╔══██╗██╔══██╗" -ForegroundColor Cyan
-    Write-Host "  ██████╔╝██║  ███╗██║  ███╗███████║██║  ██║" -ForegroundColor Cyan
-    Write-Host "  ██╔══██╗██║   ██║██║   ██║██╔══██║██║  ██║" -ForegroundColor Cyan
-    Write-Host "  ██║  ██║╚██████╔╝╚██████╔╝██║  ██║██████╔╝" -ForegroundColor Cyan
-    Write-Host "  ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═════╝ " -ForegroundColor Cyan
+    Write-Host "  ██████╗  ██████╗  ██████╗  █████╗ ██████╗ " `
+        -ForegroundColor Cyan
+
+    Write-Host "  ██╔══██╗██╔════╝ ██╔════╝ ██╔══██╗██╔══██╗" `
+        -ForegroundColor Cyan
+
+    Write-Host "  ██████╔╝██║  ███╗██║  ███╗███████║██║  ██║" `
+        -ForegroundColor Cyan
+
+    Write-Host "  ██╔══██╗██║   ██║██║   ██║██╔══██║██║  ██║" `
+        -ForegroundColor Cyan
+
+    Write-Host "  ██║  ██║╚██████╔╝╚██████╔╝██║  ██║██████╔╝" `
+        -ForegroundColor Cyan
+
+    Write-Host "  ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═════╝ " `
+        -ForegroundColor Cyan
 
     Write-Host ""
-    Write-Host "                 $RGOADName" -ForegroundColor White
-    Write-Host "              $RGOADTagline" -ForegroundColor DarkCyan
+
+    Write-Host "                     RGOAD" `
+        -ForegroundColor White
+
+    Write-Host "              $RGOADTagline" `
+        -ForegroundColor DarkCyan
+
     Write-Host ""
-    Write-Host "  $RGOADLine" -ForegroundColor DarkCyan
+
+    Write-Host "  $RGOADLine" `
+        -ForegroundColor DarkCyan
+
     Write-Host ""
 }
 
@@ -160,17 +173,40 @@ function Show-RGOADHeader {
     )
 
     Write-Host ""
-    Write-Host "  ┌────────────────────────────────────────────────────────┐" -ForegroundColor DarkCyan
-    Write-Host "  │  RGOAD  /  OFFICE INSTALLER                           │" -ForegroundColor Cyan
-    Write-Host "  ├────────────────────────────────────────────────────────┤" -ForegroundColor DarkCyan
-    Write-Host "  │  $($Title.PadRight(54).Substring(0,54))│" -ForegroundColor White
+
+    Write-Host "  +----------------------------------------------------------+" `
+        -ForegroundColor DarkCyan
+
+    Write-Host "  |  RGOAD / OFFICE INSTALLER                                |" `
+        -ForegroundColor Cyan
+
+    Write-Host "  +----------------------------------------------------------+" `
+        -ForegroundColor DarkCyan
+
+    $DisplayTitle = $Title
+
+    if ($DisplayTitle.Length -gt 56) {
+        $DisplayTitle = $DisplayTitle.Substring(0, 56)
+    }
+
+    Write-Host "  |  $($DisplayTitle.PadRight(56))|" `
+        -ForegroundColor White
 
     if (-not [string]::IsNullOrWhiteSpace($Subtitle)) {
 
-        Write-Host "  │  $($Subtitle.PadRight(54).Substring(0,54))│" -ForegroundColor DarkGray
+        $DisplaySubtitle = $Subtitle
+
+        if ($DisplaySubtitle.Length -gt 56) {
+            $DisplaySubtitle = $DisplaySubtitle.Substring(0, 56)
+        }
+
+        Write-Host "  |  $($DisplaySubtitle.PadRight(56))|" `
+            -ForegroundColor DarkGray
     }
 
-    Write-Host "  └────────────────────────────────────────────────────────┘" -ForegroundColor DarkCyan
+    Write-Host "  +----------------------------------------------------------+" `
+        -ForegroundColor DarkCyan
+
     Write-Host ""
 }
 
@@ -185,8 +221,12 @@ function Write-Sukses {
         [string]$Pesan
     )
 
-    Write-Host "  [✓] " -NoNewline -ForegroundColor Green
-    Write-Host $Pesan -ForegroundColor Gray
+    Write-Host "  [OK] " `
+        -NoNewline `
+        -ForegroundColor Green
+
+    Write-Host $Pesan `
+        -ForegroundColor Gray
 }
 
 function Write-Info {
@@ -196,8 +236,12 @@ function Write-Info {
         [string]$Pesan
     )
 
-    Write-Host "  [•] " -NoNewline -ForegroundColor Cyan
-    Write-Host $Pesan -ForegroundColor Gray
+    Write-Host "  [..] " `
+        -NoNewline `
+        -ForegroundColor Cyan
+
+    Write-Host $Pesan `
+        -ForegroundColor Gray
 }
 
 function Write-Peringatan {
@@ -207,8 +251,12 @@ function Write-Peringatan {
         [string]$Pesan
     )
 
-    Write-Host "  [!] " -NoNewline -ForegroundColor Yellow
-    Write-Host $Pesan -ForegroundColor Yellow
+    Write-Host "  [!!] " `
+        -NoNewline `
+        -ForegroundColor Yellow
+
+    Write-Host $Pesan `
+        -ForegroundColor Yellow
 }
 
 function Write-Gagal {
@@ -218,12 +266,47 @@ function Write-Gagal {
         [string]$Pesan
     )
 
-    Write-Host "  [×] " -NoNewline -ForegroundColor Red
-    Write-Host $Pesan -ForegroundColor Red
+    Write-Host "  [XX] " `
+        -NoNewline `
+        -ForegroundColor Red
+
+    Write-Host $Pesan `
+        -ForegroundColor Red
 }
 
 # ============================================================
-# STEP INDICATOR
+# SECTION
+# ============================================================
+
+function Show-Section {
+
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Title,
+
+        [string]$Description = ""
+    )
+
+    Write-Host ""
+    Write-Host "  $RGOADLine" `
+        -ForegroundColor DarkGray
+
+    Write-Host ""
+
+    Write-Host "  $Title" `
+        -ForegroundColor Cyan
+
+    if (-not [string]::IsNullOrWhiteSpace($Description)) {
+
+        Write-Host "  $Description" `
+            -ForegroundColor DarkGray
+    }
+
+    Write-Host ""
+}
+
+# ============================================================
+# STEP
 # ============================================================
 
 function Show-Step {
@@ -242,57 +325,24 @@ function Show-Step {
     )
 
     Write-Host ""
-    Write-Host "  $RGOADLine" -ForegroundColor DarkGray
+    Write-Host "  $RGOADLine" `
+        -ForegroundColor DarkGray
 
     Write-Host ""
-    Write-Host "  STEP $Number/$Total  " -NoNewline -ForegroundColor Cyan
-    Write-Host $Title -ForegroundColor White
+
+    Write-Host "  STEP $Number/$Total  " `
+        -NoNewline `
+        -ForegroundColor Cyan
+
+    Write-Host $Title `
+        -ForegroundColor White
 
     if (-not [string]::IsNullOrWhiteSpace($Description)) {
 
-        Write-Host "  $Description" -ForegroundColor DarkGray
+        Write-Host "  $Description" `
+            -ForegroundColor DarkGray
     }
 
-    Write-Host ""
-}
-
-# ============================================================
-# PROGRESS BAR
-# ============================================================
-
-function Show-RGOADProgress {
-
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Label,
-
-        [int]$Percent = 0
-    )
-
-    if ($Percent -lt 0) {
-        $Percent = 0
-    }
-
-    if ($Percent -gt 100) {
-        $Percent = 100
-    }
-
-    $Width = 36
-
-    $Filled = [math]::Floor(
-        ($Percent / 100) * $Width
-    )
-
-    $Empty = $Width - $Filled
-
-    $Bar = (
-        ("█" * $Filled) +
-        ("░" * $Empty)
-    )
-
-    Write-Host ""
-    Write-Host "  $Label" -ForegroundColor Gray
-    Write-Host "  [$Bar] $Percent%" -ForegroundColor Cyan
     Write-Host ""
 }
 
@@ -303,11 +353,13 @@ function Show-RGOADProgress {
 function Pause-RGOAD {
 
     Write-Host ""
-    Read-Host "  Tekan ENTER untuk melanjutkan"
+
+    Read-Host `
+        "  Press ENTER to exit"
 }
 
 # ============================================================
-# ADMINISTRATOR
+# ADMIN CHECK
 # ============================================================
 
 function Test-Administrator {
@@ -325,6 +377,10 @@ function Test-Administrator {
     )
 }
 
+# ============================================================
+# ELEVATION
+# ============================================================
+
 function Request-Administrator {
 
     if (Test-Administrator) {
@@ -332,41 +388,67 @@ function Request-Administrator {
         return
     }
 
-    Show-RGOADLogo
-
-    Write-Peringatan `
-        "Hak Administrator diperlukan untuk deployment Office."
+    # --------------------------------------------------------
+    # IMPORTANT:
+    #
+    # When running:
+    #
+    # irm URL | iex
+    #
+    # $PSCommandPath is normally empty.
+    #
+    # Therefore we download a temporary copy and execute
+    # that copy as Administrator.
+    # --------------------------------------------------------
 
     Write-Host ""
-    Write-Host "  Windows akan menampilkan jendela UAC." `
+    Write-Host "  $RGOADDoubleLine" `
         -ForegroundColor Yellow
+
+    Write-Host ""
+    Write-Host "  RGOAD membutuhkan Administrator privilege." `
+        -ForegroundColor Yellow
+
+    Write-Host ""
+    Write-Host "  Windows akan menampilkan UAC." `
+        -ForegroundColor DarkGray
 
     Write-Host ""
 
     try {
 
         # ----------------------------------------------------
-        # FILE PS1
+        # IF RUNNING FROM A REAL PS1 FILE
         # ----------------------------------------------------
 
-        if ($PSCommandPath) {
+        if (
+            -not [string]::IsNullOrWhiteSpace(
+                $PSCommandPath
+            )
+        ) {
+
+            Write-Info `
+                "Membuka RGOAD sebagai Administrator..."
+
+            $ArgumentList = @(
+                "-NoProfile"
+                "-ExecutionPolicy"
+                "Bypass"
+                "-File"
+                "`"$PSCommandPath`""
+                "-RGOADElevated"
+            )
 
             Start-Process `
                 -FilePath "powershell.exe" `
                 -Verb RunAs `
-                -ArgumentList @(
-                    "-NoProfile"
-                    "-ExecutionPolicy"
-                    "Bypass"
-                    "-File"
-                    "`"$PSCommandPath`""
-                )
+                -ArgumentList $ArgumentList
 
-            exit
+            exit 0
         }
 
         # ----------------------------------------------------
-        # IRM | IEX
+        # PIPE MODE: IRM | IEX
         # ----------------------------------------------------
 
         if (
@@ -375,18 +457,12 @@ function Request-Administrator {
             )
         ) {
 
-            Write-Gagal `
-                "URL repository belum dikonfigurasi."
-
-            exit 1
+            throw `
+                "RepositoryScriptUrl belum dikonfigurasi."
         }
 
-        $ElevatedScript = Join-Path `
-            $env:TEMP `
-            "Office-Installer-Elevated.ps1"
-
         Write-Info `
-            "Mengunduh salinan installer untuk elevasi..."
+            "Mengambil salinan installer dari GitHub..."
 
         Invoke-WebRequest `
             -Uri $RepositoryScriptUrl `
@@ -396,32 +472,54 @@ function Request-Administrator {
         if (-not (Test-Path $ElevatedScript)) {
 
             throw `
-                "Script elevated gagal diunduh."
+                "Salinan installer gagal dibuat."
         }
+
+        $DownloadedSize = `
+            (Get-Item $ElevatedScript).Length
+
+        if ($DownloadedSize -lt 10000) {
+
+            throw `
+                "File installer yang diunduh terlalu kecil."
+        }
+
+        Write-Sukses `
+            "Salinan installer berhasil disiapkan."
+
+        Write-Info `
+            "Meminta hak Administrator..."
+
+        $ArgumentList = @(
+            "-NoProfile"
+            "-ExecutionPolicy"
+            "Bypass"
+            "-File"
+            "`"$ElevatedScript`""
+            "-RGOADElevated"
+        )
 
         Start-Process `
             -FilePath "powershell.exe" `
             -Verb RunAs `
-            -ArgumentList @(
-                "-NoProfile"
-                "-ExecutionPolicy"
-                "Bypass"
-                "-File"
-                "`"$ElevatedScript`""
-            )
+            -ArgumentList $ArgumentList
 
-        exit
+        exit 0
     }
     catch {
 
         Write-Gagal `
-            "Gagal mendapatkan hak Administrator."
+            "Gagal melakukan elevasi Administrator."
 
         Write-Host ""
-        Write-Host $_.Exception.Message `
+
+        Write-Host `
+            $_.Exception.Message `
             -ForegroundColor Red
 
         Write-Host ""
+
+        Pause-RGOAD
 
         exit 1
     }
@@ -437,11 +535,12 @@ function Test-Windows {
         -Number 1 `
         -Total 7 `
         -Title "SYSTEM CHECK" `
-        -Description "Memeriksa lingkungan Windows."
+        -Description "Checking Windows environment."
 
     try {
 
-        $OS = Get-CimInstance Win32_OperatingSystem
+        $OS = Get-CimInstance `
+            Win32_OperatingSystem
 
         if (
             $OS.Caption `
@@ -452,20 +551,19 @@ function Test-Windows {
                 "Sistem operasi tidak didukung."
 
             Write-Host ""
-            Write-Host "  Detected: $($OS.Caption)" `
+
+            Write-Host `
+                "  Detected: $($OS.Caption)" `
                 -ForegroundColor Yellow
 
             exit 1
         }
 
         Write-Sukses `
-            "Windows terdeteksi: $($OS.Caption)"
+            "Windows: $($OS.Caption)"
 
-        if (Test-Administrator) {
-
-            Write-Sukses `
-                "Administrator privilege: tersedia."
-        }
+        Write-Sukses `
+            "Administrator privilege: available."
     }
     catch {
 
@@ -483,7 +581,7 @@ function Test-Windows {
 function Test-Internet {
 
     Write-Info `
-        "Memeriksa koneksi ke Microsoft..."
+        "Checking Microsoft connectivity..."
 
     try {
 
@@ -499,7 +597,7 @@ function Test-Internet {
         ) {
 
             Write-Sukses `
-                "Koneksi internet tersedia."
+                "Internet connection available."
         }
         else {
 
@@ -513,12 +611,20 @@ function Test-Internet {
             "Tidak dapat mengakses Microsoft."
 
         Write-Host ""
-        Write-Host "  Pastikan:" `
+
+        Write-Host `
+            "  Pastikan:" `
             -ForegroundColor Yellow
 
-        Write-Host "  • Internet aktif."
-        Write-Host "  • Tidak menggunakan captive portal."
-        Write-Host "  • Firewall tidak memblokir PowerShell."
+        Write-Host `
+            "  - Internet aktif."
+
+        Write-Host `
+            "  - Tidak menggunakan captive portal."
+
+        Write-Host `
+            "  - Firewall tidak memblokir PowerShell."
+
         Write-Host ""
 
         exit 1
@@ -532,7 +638,7 @@ function Test-Internet {
 function Initialize-WorkDirectory {
 
     Write-Info `
-        "Menyiapkan workspace RGOAD..."
+        "Preparing RGOAD workspace..."
 
     if (Test-Path $WorkDirectory) {
 
@@ -554,15 +660,17 @@ function Initialize-WorkDirectory {
     New-Item `
         -ItemType Directory `
         -Path $WorkDirectory `
-        -Force | Out-Null
+        -Force |
+        Out-Null
 
     New-Item `
         -ItemType Directory `
         -Path $ODTDirectory `
-        -Force | Out-Null
+        -Force |
+        Out-Null
 
     Write-Sukses `
-        "Workspace siap."
+        "Workspace ready."
 }
 
 # ============================================================
@@ -589,27 +697,45 @@ function Show-Menu {
         -Title $Title `
         -Subtitle $Description
 
-    for (
-        $i = 0;
-        $i -lt $Options.Count;
-        $i++
-    ) {
+    foreach ($Option in $Options) {
 
-        $Number = $i + 1
-        $Label = $Options[$i].Label
+        $Index = `
+            [array]::IndexOf(
+                $Options,
+                $Option
+            ) + 1
 
         Write-Host `
-            "  [$Number] " `
+            "  [$Index] " `
             -NoNewline `
             -ForegroundColor Cyan
 
         Write-Host `
-            $Label `
+            $Option.Label `
             -ForegroundColor White
+
+        if (
+            $Option.PSObject.Properties.Name `
+                -contains "Description"
+        ) {
+
+            if (
+                -not [string]::IsNullOrWhiteSpace(
+                    $Option.Description
+                )
+            ) {
+
+                Write-Host `
+                    "       $($Option.Description)" `
+                    -ForegroundColor DarkGray
+            }
+        }
+
+        Write-Host ""
     }
 
-    Write-Host ""
-    Write-Host "  $RGOADLine" `
+    Write-Host `
+        "  $RGOADLine" `
         -ForegroundColor DarkGray
 
     Write-Host ""
@@ -632,19 +758,21 @@ function Show-Menu {
                 $Number -le $Options.Count
             ) {
 
-                return $Options[$Number - 1].Value
+                return `
+                    $Options[$Number - 1].Value
             }
         }
 
         Write-Peringatan `
             "Pilihan tidak valid."
 
-        Start-Sleep -Milliseconds 700
+        Start-Sleep `
+            -Milliseconds 700
     }
 }
 
 # ============================================================
-# OFFICE VERSION
+# SELECT VERSION
 # ============================================================
 
 function Select-OfficeVersion {
@@ -653,23 +781,25 @@ function Select-OfficeVersion {
 
         [PSCustomObject]@{
             Label = "Office LTSC 2024"
+            Description = "Long-Term Servicing Channel"
             Value = "2024"
         }
 
         [PSCustomObject]@{
             Label = "Office LTSC 2021"
+            Description = "Long-Term Servicing Channel"
             Value = "2021"
         }
     )
 
     return Show-Menu `
         -Title "SELECT OFFICE VERSION" `
-        -Description "Choose the Long-Term Servicing Channel version." `
+        -Description "Choose the Office LTSC release." `
         -Options $Options
 }
 
 # ============================================================
-# OFFICE EDITION
+# SELECT EDITION
 # ============================================================
 
 function Select-OfficeEdition {
@@ -678,23 +808,25 @@ function Select-OfficeEdition {
 
         [PSCustomObject]@{
             Label = "Professional Plus"
+            Description = "Full volume edition"
             Value = "ProPlus"
         }
 
         [PSCustomObject]@{
             Label = "Standard"
+            Description = "Standard volume edition"
             Value = "Standard"
         }
     )
 
     return Show-Menu `
         -Title "SELECT OFFICE EDITION" `
-        -Description "Choose the Office volume edition." `
+        -Description "Choose the volume edition." `
         -Options $Options
 }
 
 # ============================================================
-# APPLICATION MENU
+# SELECT APPLICATIONS
 # ============================================================
 
 function Select-OfficeApps {
@@ -708,10 +840,6 @@ function Select-OfficeApps {
     )
 
     $OfficeApps = @()
-
-    # --------------------------------------------------------
-    # BASIC APPS
-    # --------------------------------------------------------
 
     $OfficeApps += [PSCustomObject]@{
         Id = "Word"
@@ -743,11 +871,6 @@ function Select-OfficeApps {
         Description = "Digital notes"
     }
 
-    # --------------------------------------------------------
-    # ACCESS
-    # PROFESSIONAL PLUS ONLY
-    # --------------------------------------------------------
-
     if ($Edition -eq "ProPlus") {
 
         $OfficeApps += [PSCustomObject]@{
@@ -756,11 +879,6 @@ function Select-OfficeApps {
             Description = "Database management"
         }
     }
-
-    # --------------------------------------------------------
-    # PUBLISHER
-    # LTSC 2021 ONLY
-    # --------------------------------------------------------
 
     if ($Version -eq "2021") {
 
@@ -773,8 +891,11 @@ function Select-OfficeApps {
 
     $SelectedApps = @()
 
-    $SelectAllNumber = $OfficeApps.Count + 1
-    $ClearAllNumber = $OfficeApps.Count + 2
+    $SelectAllNumber = `
+        $OfficeApps.Count + 1
+
+    $ClearAllNumber = `
+        $OfficeApps.Count + 2
 
     while ($true) {
 
@@ -784,21 +905,17 @@ function Select-OfficeApps {
 
         Show-RGOADHeader `
             -Title "APPLICATIONS" `
-            -Subtitle "Office LTSC $Version • $Edition"
+            -Subtitle "Office LTSC $Version / $Edition"
 
         Write-Host `
-            "  Select the applications you want to install." `
+            "  Select applications to install." `
             -ForegroundColor Gray
 
         Write-Host `
-            "  Use a number to toggle an application." `
+            "  Enter a number to toggle selection." `
             -ForegroundColor DarkGray
 
         Write-Host ""
-
-        # ----------------------------------------------------
-        # APPLICATION LIST
-        # ----------------------------------------------------
 
         for (
             $i = 0;
@@ -808,16 +925,17 @@ function Select-OfficeApps {
 
             $App = $OfficeApps[$i]
 
-            if (
+            $Selected = `
                 $SelectedApps -contains $App.Id
-            ) {
 
-                $Symbol = "●"
+            if ($Selected) {
+
+                $Symbol = "[X]"
                 $Color = "Green"
             }
             else {
 
-                $Symbol = "○"
+                $Symbol = "[ ]"
                 $Color = "DarkGray"
             }
 
@@ -827,7 +945,7 @@ function Select-OfficeApps {
                 -ForegroundColor Cyan
 
             Write-Host `
-                "$Symbol  " `
+                "$Symbol " `
                 -NoNewline `
                 -ForegroundColor $Color
 
@@ -846,39 +964,16 @@ function Select-OfficeApps {
             "  $RGOADLine" `
             -ForegroundColor DarkGray
 
-        # ----------------------------------------------------
-        # SELECT ALL
-        # ----------------------------------------------------
+        Write-Host ""
 
-        if (
-            $SelectedApps.Count -eq
-            $OfficeApps.Count
-        ) {
+        Write-Host `
+            "  [$SelectAllNumber] " `
+            -NoNewline `
+            -ForegroundColor Cyan
 
-            Write-Host `
-                "  [$SelectAllNumber] " `
-                -NoNewline `
-                -ForegroundColor Cyan
-
-            Write-Host `
-                "◉  Select All" `
-                -ForegroundColor Green
-        }
-        else {
-
-            Write-Host `
-                "  [$SelectAllNumber] " `
-                -NoNewline `
-                -ForegroundColor Cyan
-
-            Write-Host `
-                "○  Select All" `
-                -ForegroundColor White
-        }
-
-        # ----------------------------------------------------
-        # CLEAR ALL
-        # ----------------------------------------------------
+        Write-Host `
+            "Select All" `
+            -ForegroundColor White
 
         Write-Host `
             "  [$ClearAllNumber] " `
@@ -886,12 +981,8 @@ function Select-OfficeApps {
             -ForegroundColor Cyan
 
         Write-Host `
-            "○  Clear All" `
+            "Clear All" `
             -ForegroundColor Yellow
-
-        # ----------------------------------------------------
-        # CONTINUE
-        # ----------------------------------------------------
 
         Write-Host `
             "  [0] " `
@@ -899,10 +990,11 @@ function Select-OfficeApps {
             -ForegroundColor Cyan
 
         Write-Host `
-            "→  Continue" `
+            "Continue" `
             -ForegroundColor White
 
         Write-Host ""
+
         Write-Host `
             "  Selected: " `
             -NoNewline `
@@ -927,7 +1019,8 @@ function Select-OfficeApps {
                 Write-Peringatan `
                     "Pilih minimal satu aplikasi."
 
-                Start-Sleep -Milliseconds 900
+                Start-Sleep `
+                    -Milliseconds 900
 
                 continue
             }
@@ -939,7 +1032,10 @@ function Select-OfficeApps {
         # SELECT ALL
         # ----------------------------------------------------
 
-        if ($InputUser -eq "$SelectAllNumber") {
+        if (
+            $InputUser -eq
+            "$SelectAllNumber"
+        ) {
 
             $SelectedApps = @(
                 $OfficeApps |
@@ -955,7 +1051,10 @@ function Select-OfficeApps {
         # CLEAR ALL
         # ----------------------------------------------------
 
-        if ($InputUser -eq "$ClearAllNumber") {
+        if (
+            $InputUser -eq
+            "$ClearAllNumber"
+        ) {
 
             $SelectedApps = @()
 
@@ -1010,12 +1109,13 @@ function Select-OfficeApps {
         Write-Peringatan `
             "Pilihan tidak valid."
 
-        Start-Sleep -Milliseconds 700
+        Start-Sleep `
+            -Milliseconds 700
     }
 }
 
 # ============================================================
-# ARCHITECTURE
+# SELECT ARCHITECTURE
 # ============================================================
 
 function Select-Architecture {
@@ -1023,12 +1123,14 @@ function Select-Architecture {
     $Options = @(
 
         [PSCustomObject]@{
-            Label = "64-bit  •  Recommended"
+            Label = "64-bit"
+            Description = "Recommended for modern Windows"
             Value = "64"
         }
 
         [PSCustomObject]@{
             Label = "32-bit"
+            Description = "For compatible legacy environments"
             Value = "32"
         }
     )
@@ -1040,7 +1142,7 @@ function Select-Architecture {
 }
 
 # ============================================================
-# LANGUAGE
+# SELECT LANGUAGE
 # ============================================================
 
 function Select-Language {
@@ -1049,11 +1151,13 @@ function Select-Language {
 
         [PSCustomObject]@{
             Label = "Bahasa Indonesia"
+            Description = "Indonesian interface"
             Value = "id-id"
         }
 
         [PSCustomObject]@{
             Label = "English"
+            Description = "English interface"
             Value = "en-us"
         }
     )
@@ -1246,7 +1350,7 @@ function New-Configuration {
         -Number 5 `
         -Total 7 `
         -Title "CONFIGURATION" `
-        -Description "Generating Office Deployment Tool configuration."
+        -Description "Generating configuration.xml."
 
     $ExcludeXml = Get-ExcludeAppXml `
         -Version $Version `
@@ -1277,20 +1381,31 @@ $ExcludeXml
         -Value $Xml `
         -Encoding UTF8
 
+    if (-not (Test-Path $ConfigurationFile)) {
+
+        throw `
+            "configuration.xml gagal dibuat."
+    }
+
     Write-Sukses `
         "configuration.xml berhasil dibuat."
 
     Write-Host ""
-    Write-Host "  Product : $ProductId" `
+
+    Write-Host `
+        "  Product : $ProductId" `
         -ForegroundColor Gray
 
-    Write-Host "  Channel : $Channel" `
+    Write-Host `
+        "  Channel : $Channel" `
         -ForegroundColor Gray
 
-    Write-Host "  Arch    : $Architecture-bit" `
+    Write-Host `
+        "  Arch    : $Architecture-bit" `
         -ForegroundColor Gray
 
-    Write-Host "  Language: $Language" `
+    Write-Host `
+        "  Language: $Language" `
         -ForegroundColor Gray
 
     return $ProductId
@@ -1328,12 +1443,13 @@ function Show-Configuration {
 
     Show-RGOADHeader `
         -Title "INSTALLATION SUMMARY" `
-        -Subtitle "Review your configuration before deployment."
+        -Subtitle "Review configuration before deployment."
 
     $Channel = Get-Channel `
         -Version $Version
 
-    Write-Host "  VERSION" `
+    Write-Host `
+        "  VERSION" `
         -ForegroundColor DarkGray
 
     Write-Host `
@@ -1342,7 +1458,8 @@ function Show-Configuration {
 
     Write-Host ""
 
-    Write-Host "  EDITION" `
+    Write-Host `
+        "  EDITION" `
         -ForegroundColor DarkGray
 
     Write-Host `
@@ -1351,7 +1468,8 @@ function Show-Configuration {
 
     Write-Host ""
 
-    Write-Host "  PRODUCT" `
+    Write-Host `
+        "  PRODUCT" `
         -ForegroundColor DarkGray
 
     Write-Host `
@@ -1360,7 +1478,8 @@ function Show-Configuration {
 
     Write-Host ""
 
-    Write-Host "  CHANNEL" `
+    Write-Host `
+        "  CHANNEL" `
         -ForegroundColor DarkGray
 
     Write-Host `
@@ -1369,7 +1488,8 @@ function Show-Configuration {
 
     Write-Host ""
 
-    Write-Host "  ARCHITECTURE" `
+    Write-Host `
+        "  ARCHITECTURE" `
         -ForegroundColor DarkGray
 
     Write-Host `
@@ -1378,7 +1498,8 @@ function Show-Configuration {
 
     Write-Host ""
 
-    Write-Host "  LANGUAGE" `
+    Write-Host `
+        "  LANGUAGE" `
         -ForegroundColor DarkGray
 
     Write-Host `
@@ -1404,7 +1525,8 @@ function Show-Configuration {
 
     foreach ($AppId in $SelectedApps) {
 
-        Write-Host "  ├─ ✓ " `
+        Write-Host `
+            "  +-- [OK] " `
             -NoNewline `
             -ForegroundColor Green
 
@@ -1429,11 +1551,13 @@ function Show-Configuration {
         -ForegroundColor DarkGray
 
     Write-Host `
-        "  Disabled / Not performed" `
+        "  Not performed by RGOAD" `
         -ForegroundColor Yellow
 
     Write-Host ""
-    Write-Host "  $RGOADLine" `
+
+    Write-Host `
+        "  $RGOADLine" `
         -ForegroundColor DarkGray
 
     Write-Host ""
@@ -1460,7 +1584,8 @@ function Show-Configuration {
 
     while ($true) {
 
-        $Confirmation = Read-Host "  › Continue"
+        $Confirmation = Read-Host `
+            "  › Continue"
 
         if ($Confirmation -match "^[Yy]$") {
 
@@ -1492,22 +1617,24 @@ function Get-ODT {
         -Number 6 `
         -Total 7 `
         -Title "MICROSOFT ODT" `
-        -Description "Downloading the official Office Deployment Tool."
+        -Description "Downloading official Office Deployment Tool."
 
     Write-Info `
-        "Microsoft ODT page:"
+        "Mencari download link ODT resmi Microsoft..."
 
     Write-Host ""
+
+    Write-Host `
+        "  Source:" `
+        -ForegroundColor DarkGray
+
     Write-Host `
         "  $MicrosoftODTPage" `
-        -ForegroundColor DarkGray
+        -ForegroundColor Cyan
 
     Write-Host ""
 
     try {
-
-        Write-Info `
-            "Mencari download link ODT resmi..."
 
         $Page = Invoke-WebRequest `
             -Uri $MicrosoftODTPage `
@@ -1549,7 +1676,8 @@ function Get-ODT {
 
         if ($ODTLink.StartsWith("//")) {
 
-            $ODTLink = "https:$ODTLink"
+            $ODTLink = `
+                "https:$ODTLink"
         }
 
         if ($ODTLink.StartsWith("/")) {
@@ -1570,14 +1698,14 @@ function Get-ODT {
         }
 
         Write-Sukses `
-            "Official Microsoft ODT link ditemukan."
+            "Official Microsoft ODT link found."
 
         $ODTInstaller = Join-Path `
             $WorkDirectory `
             "officedeploymenttool.exe"
 
         Write-Info `
-            "Downloading ODT..."
+            "Downloading Office Deployment Tool..."
 
         Invoke-WebRequest `
             -Uri $ODTLink `
@@ -1587,7 +1715,7 @@ function Get-ODT {
         if (-not (Test-Path $ODTInstaller)) {
 
             throw `
-                "File ODT tidak ditemukan."
+                "File ODT tidak ditemukan setelah download."
         }
 
         $FileSize = `
@@ -1618,7 +1746,7 @@ function Get-ODT {
         Write-Host ""
 
         Write-Peringatan `
-            "ODT dapat diunduh secara manual dari Microsoft."
+            "ODT dapat diunduh manual dari Microsoft:"
 
         Write-Host ""
 
@@ -1645,9 +1773,12 @@ function Expand-ODT {
         -Number 6 `
         -Total 7 `
         -Title "PREPARING ODT" `
-        -Description "Extracting the Office Deployment Tool."
+        -Description "Extracting Office Deployment Tool."
 
     try {
+
+        Write-Info `
+            "Extracting ODT package..."
 
         $Process = Start-Process `
             -FilePath $Installer `
@@ -1671,7 +1802,7 @@ function Expand-ODT {
         if (-not (Test-Path $SetupFile)) {
 
             throw `
-                "setup.exe tidak ditemukan."
+                "setup.exe tidak ditemukan setelah ekstraksi."
         }
 
         Write-Sukses `
@@ -1712,20 +1843,22 @@ function Download-Office {
         -Number 7 `
         -Total 7 `
         -Title "DOWNLOADING OFFICE" `
-        -Description "Downloading Office files through Microsoft ODT."
+        -Description "Downloading Office through Microsoft ODT."
 
     Write-Info `
         "Office akan diunduh dari CDN Microsoft."
 
     Write-Host ""
+
     Write-Peringatan `
         "Ukuran download dapat mencapai beberapa GB."
 
     Write-Host ""
 
-    Show-RGOADProgress `
-        -Label "Download initialized" `
-        -Percent 10
+    Write-Info `
+        "Menjalankan ODT download process..."
+
+    Write-Host ""
 
     $Process = Start-Process `
         -FilePath $SetupFile `
@@ -1741,6 +1874,7 @@ function Download-Office {
             "Download Office gagal."
 
         Write-Host ""
+
         Write-Host `
             "Exit Code: $($Process.ExitCode)" `
             -ForegroundColor Red
@@ -1748,9 +1882,7 @@ function Download-Office {
         exit 1
     }
 
-    Show-RGOADProgress `
-        -Label "Office package downloaded" `
-        -Percent 100
+    Write-Host ""
 
     Write-Sukses `
         "File Office berhasil diunduh."
@@ -1773,16 +1905,15 @@ function Install-Office {
         -Title "INSTALLING OFFICE" `
         -Description "Deploying Microsoft Office using ODT."
 
-    Write-Host ""
-
     Write-Peringatan `
         "Jangan matikan komputer selama proses instalasi."
 
     Write-Host ""
 
-    Show-RGOADProgress `
-        -Label "Starting Office deployment" `
-        -Percent 10
+    Write-Info `
+        "Starting Office deployment..."
+
+    Write-Host ""
 
     $Process = Start-Process `
         -FilePath $SetupFile `
@@ -1811,9 +1942,7 @@ function Install-Office {
         exit 1
     }
 
-    Show-RGOADProgress `
-        -Label "Office deployment completed" `
-        -Percent 100
+    Write-Host ""
 
     Write-Sukses `
         "Instalasi Office selesai."
@@ -1839,24 +1968,31 @@ function Show-Finish {
     Clear-Host
 
     Write-Host ""
-    Write-Host "  ╔════════════════════════════════════════════════════════╗" `
+
+    Write-Host `
+        "  +========================================================+" `
         -ForegroundColor Green
 
-    Write-Host "  ║                                                        ║" `
+    Write-Host `
+        "  |                                                        |" `
         -ForegroundColor Green
 
-    Write-Host "  ║                 DEPLOYMENT COMPLETE                    ║" `
+    Write-Host `
+        "  |                DEPLOYMENT COMPLETE                    |" `
         -ForegroundColor White
 
-    Write-Host "  ║                                                        ║" `
+    Write-Host `
+        "  |                                                        |" `
         -ForegroundColor Green
 
-    Write-Host "  ╚════════════════════════════════════════════════════════╝" `
+    Write-Host `
+        "  +========================================================+" `
         -ForegroundColor Green
 
     Write-Host ""
 
-    Write-Host "  RGOAD / OFFICE INSTALLER" `
+    Write-Host `
+        "  RGOAD / OFFICE INSTALLER" `
         -ForegroundColor Cyan
 
     Write-Host ""
@@ -1897,7 +2033,7 @@ function Show-Finish {
         if ($AppLabels.ContainsKey($AppId)) {
 
             Write-Host `
-                "  ├─ ✓ $($AppLabels[$AppId])" `
+                "  +-- [OK] $($AppLabels[$AppId])" `
                 -ForegroundColor Green
         }
     }
@@ -1924,7 +2060,8 @@ function Show-Finish {
 
     Write-Host ""
 
-    Write-Host "  $RGOADDoubleLine" `
+    Write-Host `
+        "  $RGOADDoubleLine" `
         -ForegroundColor DarkCyan
 
     Write-Host ""
@@ -1944,14 +2081,16 @@ function Show-Finish {
 
 try {
 
+    Initialize-RGOADConsole
+
     # --------------------------------------------------------
-    # ADMINISTRATOR
+    # ADMIN
     # --------------------------------------------------------
 
     Request-Administrator
 
     # --------------------------------------------------------
-    # INITIAL SCREEN
+    # STARTUP
     # --------------------------------------------------------
 
     Show-RGOADLogo
@@ -1967,11 +2106,11 @@ try {
     Write-Host ""
 
     Write-Host `
-        "  Deploy Microsoft Office LTSC with a clean" `
+        "  Microsoft Office LTSC deployment utility." `
         -ForegroundColor Gray
 
     Write-Host `
-        "  and interactive PowerShell experience." `
+        "  Powered by the official Microsoft Office Deployment Tool." `
         -ForegroundColor Gray
 
     Write-Host ""
@@ -1981,15 +2120,15 @@ try {
         -ForegroundColor DarkGray
 
     Write-Host `
-        "  • Office LTSC 2024" `
+        "  [>] Office LTSC 2024" `
         -ForegroundColor Gray
 
     Write-Host `
-        "  • Office LTSC 2021" `
+        "  [>] Office LTSC 2021" `
         -ForegroundColor Gray
 
     Write-Host `
-        "  • Professional Plus / Standard" `
+        "  [>] Professional Plus / Standard" `
         -ForegroundColor Gray
 
     Write-Host ""
@@ -2001,19 +2140,26 @@ try {
     Write-Host ""
 
     Write-Info `
-        "Initializing RGOAD deployment engine..."
+        "Initializing deployment engine..."
 
-    Start-Sleep -Milliseconds 500
+    Start-Sleep `
+        -Milliseconds 500
 
     # --------------------------------------------------------
-    # SYSTEM
+    # STEP 1
     # --------------------------------------------------------
 
     Test-Windows
 
     # --------------------------------------------------------
-    # INTERNET
+    # STEP 2
     # --------------------------------------------------------
+
+    Show-Step `
+        -Number 2 `
+        -Total 7 `
+        -Title "NETWORK CHECK" `
+        -Description "Checking Microsoft connectivity."
 
     Test-Internet
 
@@ -2021,47 +2167,59 @@ try {
     # WORKSPACE
     # --------------------------------------------------------
 
+    Show-Step `
+        -Number 3 `
+        -Total 7 `
+        -Title "WORKSPACE" `
+        -Description "Preparing temporary deployment workspace."
+
     Initialize-WorkDirectory
 
     # --------------------------------------------------------
     # VERSION
     # --------------------------------------------------------
 
-    $OfficeVersion = Select-OfficeVersion
+    $OfficeVersion = `
+        Select-OfficeVersion
 
     # --------------------------------------------------------
     # EDITION
     # --------------------------------------------------------
 
-    $OfficeEdition = Select-OfficeEdition
+    $OfficeEdition = `
+        Select-OfficeEdition
 
     # --------------------------------------------------------
     # APPLICATIONS
     # --------------------------------------------------------
 
-    $SelectedApps = Select-OfficeApps `
-        -Version $OfficeVersion `
-        -Edition $OfficeEdition
+    $SelectedApps = `
+        Select-OfficeApps `
+            -Version $OfficeVersion `
+            -Edition $OfficeEdition
 
     # --------------------------------------------------------
     # ARCHITECTURE
     # --------------------------------------------------------
 
-    $Architecture = Select-Architecture
+    $Architecture = `
+        Select-Architecture
 
     # --------------------------------------------------------
     # LANGUAGE
     # --------------------------------------------------------
 
-    $Language = Select-Language
+    $Language = `
+        Select-Language
 
     # --------------------------------------------------------
     # PRODUCT
     # --------------------------------------------------------
 
-    $ProductId = Get-ProductId `
-        -Version $OfficeVersion `
-        -Edition $OfficeEdition
+    $ProductId = `
+        Get-ProductId `
+            -Version $OfficeVersion `
+            -Edition $OfficeEdition
 
     # --------------------------------------------------------
     # CONFIGURATION
@@ -2088,17 +2246,19 @@ try {
         -SelectedApps $SelectedApps
 
     # --------------------------------------------------------
-    # DOWNLOAD ODT
+    # ODT
     # --------------------------------------------------------
 
-    $ODTInstaller = Get-ODT
+    $ODTInstaller = `
+        Get-ODT
 
     # --------------------------------------------------------
-    # EXTRACT ODT
+    # EXTRACT
     # --------------------------------------------------------
 
-    $SetupFile = Expand-ODT `
-        -Installer $ODTInstaller
+    $SetupFile = `
+        Expand-ODT `
+            -Installer $ODTInstaller
 
     # --------------------------------------------------------
     # DOWNLOAD OFFICE
@@ -2128,13 +2288,17 @@ catch {
     Clear-Host
 
     Write-Host ""
-    Write-Host "  ╔════════════════════════════════════════════════════════╗" `
+
+    Write-Host `
+        "  +========================================================+" `
         -ForegroundColor Red
 
-    Write-Host "  ║                    RGOAD ERROR                         ║" `
+    Write-Host `
+        "  |                    RGOAD ERROR                         |" `
         -ForegroundColor White
 
-    Write-Host "  ╚════════════════════════════════════════════════════════╝" `
+    Write-Host `
+        "  +========================================================+" `
         -ForegroundColor Red
 
     Write-Host ""
@@ -2145,8 +2309,12 @@ catch {
     Write-Host ""
 
     Write-Host `
-        "  Troubleshooting:" `
+        "  Troubleshooting" `
         -ForegroundColor Yellow
+
+    Write-Host `
+        "  Check the repository documentation:" `
+        -ForegroundColor Gray
 
     Write-Host `
         "  docs\TROUBLESHOOTING.md" `
@@ -2159,7 +2327,7 @@ catch {
         -ForegroundColor DarkGray
 
     Write-Host `
-        $WorkDirectory `
+        "  $WorkDirectory" `
         -ForegroundColor DarkGray
 
     Write-Host ""
