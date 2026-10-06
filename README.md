@@ -1,178 +1,143 @@
-````markdown
 # Office Installer
 
-Installer sederhana Microsoft Office LTSC untuk Windows menggunakan
-Office Deployment Tool (ODT) resmi Microsoft.
+Installer Microsoft Office berbasis **PowerShell** yang menggunakan **Microsoft Office Deployment Tool (ODT)**.
 
-Project ini dibuat untuk mempermudah pengguna Windows di Indonesia
-melakukan instalasi Office LTSC tanpa harus membuat `configuration.xml`
-secara manual.
-
----
-
-## Fitur
-
-Installer menyediakan pilihan:
-
-- Office LTSC 2024
-- Office LTSC 2021
-- Professional Plus
-- Standard
-- 64-bit
-- 32-bit
-- Bahasa Indonesia
-- English
-
-### Proses Instalasi
-
-1. Download Office Deployment Tool
-2. Pilih versi Office
-3. Pilih edisi
-4. Pilih arsitektur
-5. Pilih bahasa
-6. Membuat konfigurasi otomatis
-7. Download file Office dari CDN Microsoft
-8. Install Office
-9. Selesai
-
----
-
-## Persyaratan
-
-Pastikan komputer memiliki:
-
-- Windows 10 atau Windows 11
-- Koneksi internet
-- Hak Administrator
-- Ruang penyimpanan yang cukup
-- Lisensi Office LTSC yang sah
-
-Office LTSC merupakan produk volume licensing.
-
-Project ini tidak menyediakan lisensi Office.
+Installer ini dibuat untuk memudahkan pengguna Windows melakukan instalasi **Office LTSC 2024** atau **Office LTSC 2021** tanpa perlu membuat file konfigurasi XML secara manual.
 
 ---
 
 ## Cara Termudah
 
-Buka PowerShell sebagai pengguna biasa kemudian jalankan:
+Buka **PowerShell sebagai pengguna biasa**, kemudian jalankan:
 
 ```powershell
 irm https://raw.githubusercontent.com/FebrianSuban/office-installer/main/Install-Office.ps1 | iex
-````
+```
 
-Setelah itu installer akan berjalan.
+Setelah itu installer akan berjalan dan menampilkan menu pilihan.
 
-Windows mungkin akan menampilkan UAC untuk meminta hak Administrator.
+Alur instalasi:
+
+```text
+Download ODT
+     ↓
+Pilih versi Office
+     ↓
+Pilih edisi Office
+     ↓
+Pilih arsitektur
+     ↓
+Pilih bahasa
+     ↓
+Download file Office
+     ↓
+Install Office
+     ↓
+Selesai
+```
+
+> **Catatan:** PowerShell akan meminta izin administrator ketika proses instalasi membutuhkan hak administrator.
 
 ---
 
-## Cara Manual
+## Fitur
 
-Clone repository:
+* Instalasi Office LTSC 2024
+* Instalasi Office LTSC 2021
+* Pilihan **Professional Plus** atau **Standard**
+* Pilihan **64-bit** atau **32-bit**
+* Pilihan bahasa **Indonesia** atau **English**
+* Menggunakan Microsoft Office Deployment Tool (ODT)
+* File Office diunduh langsung dari server Microsoft
+* Tidak menyimpan installer Office berukuran besar di GitHub
+* Membuat konfigurasi ODT secara otomatis
+* Tidak membutuhkan pembuatan XML secara manual
+* Mendukung instalasi melalui satu perintah PowerShell
+* Tidak menyertakan product key
+* Tidak melakukan crack atau bypass aktivasi
+
+---
+
+## Persyaratan
+
+Sebelum menjalankan installer, pastikan:
+
+* Windows 10 atau Windows 11
+* Koneksi internet aktif
+* PowerShell tersedia
+* Memiliki hak administrator saat proses instalasi
+* Ruang penyimpanan yang cukup
+* Tidak sedang menjalankan proses instalasi Office lainnya
+
+---
+
+## Produk yang Didukung
+
+### Office LTSC 2024
+
+| Edisi                  | Product ID           | Channel           |
+| ---------------------- | -------------------- | ----------------- |
+| Professional Plus 2024 | `ProPlus2024Volume`  | `PerpetualVL2024` |
+| Standard 2024          | `Standard2024Volume` | `PerpetualVL2024` |
+
+### Office LTSC 2021
+
+| Edisi                  | Product ID           | Channel           |
+| ---------------------- | -------------------- | ----------------- |
+| Professional Plus 2021 | `ProPlus2021Volume`  | `PerpetualVL2021` |
+| Standard 2021          | `Standard2021Volume` | `PerpetualVL2021` |
+
+---
+
+## Pilihan Arsitektur
+
+Installer menyediakan dua pilihan:
+
+```text
+1. 64-bit
+2. 32-bit
+```
+
+Untuk sebagian besar komputer Windows modern, **64-bit** merupakan pilihan yang disarankan.
+
+Jika komputer atau aplikasi tertentu membutuhkan Office 32-bit, gunakan pilihan **32-bit**.
+
+---
+
+## Pilihan Bahasa
+
+Installer menyediakan:
+
+```text
+1. Bahasa Indonesia
+2. English
+```
+
+Bahasa yang dipilih akan digunakan sebagai bahasa instalasi Office.
+
+---
+
+## Instalasi Manual
+
+Jika tidak ingin menggunakan perintah `irm | iex`, repository dapat di-clone terlebih dahulu.
+
+### 1. Clone repository
 
 ```powershell
 git clone https://github.com/FebrianSuban/office-installer.git
 ```
 
-Masuk ke folder:
+### 2. Masuk ke folder
 
 ```powershell
 cd office-installer
 ```
 
-Jalankan installer:
+### 3. Jalankan installer
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\Install-Office.ps1
 ```
-
----
-
-## Office yang Didukung
-
-### Office LTSC 2024
-
-#### Professional Plus
-
-```text
-ProPlus2024Volume
-```
-
-#### Standard
-
-```text
-Standard2024Volume
-```
-
-#### Channel
-
-```text
-PerpetualVL2024
-```
-
----
-
-### Office LTSC 2021
-
-#### Professional Plus
-
-```text
-ProPlus2021Volume
-```
-
-#### Standard
-
-```text
-Standard2021Volume
-```
-
-#### Channel
-
-```text
-PerpetualVL2021
-```
-
-Product ID tersebut mengikuti dokumentasi deployment resmi Microsoft.
-
----
-
-## Aktivasi
-
-Installer ini **TIDAK**:
-
-* Memasukkan Product Key
-* Melakukan aktivasi
-* Menggunakan KMS ilegal
-* Menggunakan crack
-* Menggunakan activator
-* Memodifikasi file Office
-* Melakukan bypass lisensi
-
-Setelah instalasi selesai, pengguna bertanggung jawab melakukan
-aktivasi sesuai lisensi yang dimiliki.
-
-Lihat dokumentasi:
-
-[`docs/AKTIVASI.md`](docs/AKTIVASI.md)
-
----
-
-## Office Deployment Tool
-
-Project ini menggunakan Office Deployment Tool resmi Microsoft.
-
-### Microsoft Download Center
-
-https://www.microsoft.com/download/details.aspx?id=49117
-
-### Dokumentasi Office LTSC 2024
-
-https://learn.microsoft.com/office/ltsc/2024/deploy
-
-### Dokumentasi Office LTSC 2021
-
-https://learn.microsoft.com/office/ltsc/2021/deploy
 
 ---
 
@@ -188,6 +153,7 @@ office-installer/
 │
 ├── config/
 │   ├── README.md
+│   │
 │   └── examples/
 │       ├── ltsc-2024-proplus.xml
 │       ├── ltsc-2024-standard.xml
@@ -202,67 +168,321 @@ office-installer/
 
 ---
 
-## Catatan Lisensi
+## Cara Kerja
 
-Project ini hanya menyediakan script deployment.
+Installer menggunakan **Office Deployment Tool (ODT)** dari Microsoft.
 
-Microsoft Office bukan bagian dari repository ini.
+Secara sederhana prosesnya:
 
-File instalasi Office diambil melalui Office Deployment Tool
-dan CDN Microsoft.
+```text
+Pengguna
+   │
+   ▼
+Install-Office.ps1
+   │
+   ├── Cek Windows
+   ├── Cek koneksi internet
+   ├── Cek hak administrator
+   │
+   ▼
+Download Office Deployment Tool
+   │
+   ▼
+Pilih konfigurasi Office
+   │
+   ├── Versi
+   ├── Edisi
+   ├── Arsitektur
+   └── Bahasa
+   │
+   ▼
+Membuat configuration.xml
+   │
+   ▼
+ODT /download
+   │
+   ▼
+Server Microsoft
+   │
+   ▼
+File Office
+   │
+   ▼
+ODT /configure
+   │
+   ▼
+Office terpasang
+```
 
-Jangan mengunggah file instalasi Office ke repository GitHub.
+---
+
+## Office Deployment Tool
+
+Installer ini menggunakan **Office Deployment Tool (ODT)** resmi dari Microsoft.
+
+ODT bertugas untuk:
+
+* Mengunduh file instalasi Office
+* Membaca konfigurasi XML
+* Menentukan produk Office
+* Menentukan arsitektur
+* Menentukan bahasa
+* Melakukan instalasi Office
+
+File Office **tidak disimpan di repository GitHub**.
+
+Installer hanya menyimpan script dan konfigurasi. File Office akan diunduh ketika proses instalasi dijalankan.
+
+---
+
+## Aktivasi
+
+**Installer ini tidak melakukan aktivasi Office.**
+
+Tidak ada:
+
+```text
+Product Key
+Crack
+KMS
+Activator
+Bypass
+Loader
+Patch
+```
+
+Script hanya melakukan:
+
+```text
+Download
+    ↓
+Configure
+    ↓
+Install
+```
+
+Setelah Office terpasang, status aktivasi bergantung pada **lisensi yang dimiliki pengguna dan metode lisensi Microsoft yang sesuai**.
+
+Untuk informasi lebih lanjut, lihat:
+
+```text
+docs/AKTIVASI.md
+```
+
+---
+
+## Keamanan
+
+Script ini tidak menyertakan file Office dalam repository.
+
+File Office diunduh menggunakan **Office Deployment Tool** dan sumber distribusi Microsoft.
+
+Repository ini hanya menyediakan script otomatisasi.
+
+Sebelum menjalankan perintah PowerShell dari internet, pengguna disarankan untuk memeriksa isi script terlebih dahulu.
+
+Script utama:
+
+```text
+Install-Office.ps1
+```
+
+---
+
+## Melihat Script Sebelum Menjalankan
+
+Jika ingin melihat isi script terlebih dahulu, buka:
+
+```text
+https://github.com/FebrianSuban/office-installer/blob/main/Install-Office.ps1
+```
+
+Atau download menggunakan:
+
+```powershell
+Invoke-WebRequest https://raw.githubusercontent.com/FebrianSuban/office-installer/main/Install-Office.ps1 -OutFile Install-Office.ps1
+```
+
+Kemudian buka:
+
+```powershell
+code .\Install-Office.ps1
+```
+
+Jika Visual Studio Code tidak tersedia, dapat menggunakan:
+
+```powershell
+notepad .\Install-Office.ps1
+```
+
+---
+
+## Folder Sementara
+
+Installer menggunakan folder sementara:
+
+```text
+%TEMP%\Office-Installer
+```
+
+Contohnya:
+
+```text
+C:\Users\<username>\AppData\Local\Temp\Office-Installer
+```
+
+Folder tersebut digunakan untuk menyimpan sementara:
+
+```text
+Office Deployment Tool
+configuration.xml
+file instalasi Office
+```
+
+Folder dapat dihapus setelah proses instalasi selesai jika sudah tidak diperlukan.
+
+---
+
+## Jika Instalasi Gagal
+
+Jika terjadi masalah, jangan langsung menjalankan installer berulang kali.
+
+Periksa terlebih dahulu:
+
+### 1. Koneksi internet
+
+Pastikan komputer dapat mengakses internet.
+
+### 2. Ruang penyimpanan
+
+Pastikan drive sistem memiliki ruang kosong yang cukup.
+
+### 3. Office yang sudah terpasang
+
+Office versi lain yang sudah terpasang dapat menyebabkan konflik.
+
+### 4. Hak administrator
+
+Pastikan PowerShell dapat memperoleh hak administrator ketika diminta.
+
+### 5. File log
+
+Periksa pesan error yang ditampilkan PowerShell.
+
+Dokumentasi troubleshooting:
+
+```text
+docs/TROUBLESHOOTING.md
+```
+
+---
+
+## Repository
+
+Repository GitHub:
+
+```text
+https://github.com/FebrianSuban/office-installer
+```
+
+Script installer:
+
+```text
+https://raw.githubusercontent.com/FebrianSuban/office-installer/main/Install-Office.ps1
+```
+
+---
+
+## Dokumentasi
+
+Dokumentasi tambahan tersedia di:
+
+```text
+docs/
+├── INSTALASI.md
+├── AKTIVASI.md
+└── TROUBLESHOOTING.md
+```
+
+Konfigurasi contoh tersedia di:
+
+```text
+config/
+└── examples/
+```
 
 ---
 
 ## Disclaimer
 
-Project ini bukan produk resmi Microsoft.
+Project ini merupakan script otomatisasi untuk membantu proses deployment Microsoft Office menggunakan Office Deployment Tool.
 
-Microsoft Office dan Office Deployment Tool merupakan produk dan
-merek dagang Microsoft.
+Project ini **bukan produk resmi Microsoft** dan tidak berafiliasi dengan Microsoft.
 
-Project ini hanya menyediakan script untuk membantu proses deployment.
+Microsoft Office merupakan produk dan merek dagang milik Microsoft Corporation.
 
-Pengguna tetap bertanggung jawab atas lisensi Microsoft Office
-yang digunakan.
+Pengguna bertanggung jawab untuk memastikan bahwa penggunaan Office memiliki lisensi yang sesuai dengan ketentuan Microsoft.
 
-````
+Project ini tidak menyediakan product key, aktivasi ilegal, crack, atau mekanisme bypass lisensi.
 
-### Setelah mengganti `README.md`
+---
 
-Di PowerShell, jalankan:
+## Lisensi
 
-```powershell
-git add README.md
-git commit -m "Perbaiki README"
-git push
-````
+Project ini menggunakan lisensi **MIT**.
 
-Kalau ingin memastikan hasilnya sudah benar di lokal:
-
-```powershell
-code README.md
-```
-
-Di GitHub nanti hasilnya akan tampil seperti:
-
-**Office Installer**
-
-> Installer sederhana Microsoft Office LTSC untuk Windows...
-
-dengan bagian **Features**, **Persyaratan**, **Cara Termudah**, **Struktur Repository**, dll. dan link akan menjadi clickable.
-
-**Catatan kecil:** untuk README GitHub, URL biasa seperti:
+Lihat file:
 
 ```text
-https://github.com/FebrianSuban/office-installer.git
+LICENSE
 ```
 
-juga otomatis menjadi link di GitHub. Sedangkan untuk link internal seperti `docs/AKTIVASI.md`, format:
+---
 
-```markdown
-[docs/AKTIVASI.md](docs/AKTIVASI.md)
+## Sumber Resmi Microsoft
+
+Office Deployment Tool:
+
+```text
+https://www.microsoft.com/download/details.aspx?id=49117
 ```
 
-adalah yang paling tepat.
+Dokumentasi Office LTSC 2024:
+
+```text
+https://learn.microsoft.com/office/ltsc/2024/deploy
+```
+
+Dokumentasi Office LTSC 2021:
+
+```text
+https://learn.microsoft.com/office/ltsc/2021/deploy
+```
+
+---
+
+## Ringkas
+
+Jika hanya ingin menginstal Office, cukup jalankan:
+
+```powershell
+irm https://raw.githubusercontent.com/FebrianSuban/office-installer/main/Install-Office.ps1 | iex
+```
+
+Kemudian ikuti menu yang muncul.
+
+```text
+Pilih versi
+   ↓
+Pilih edisi
+   ↓
+Pilih arsitektur
+   ↓
+Pilih bahasa
+   ↓
+Download
+   ↓
+Install
+   ↓
+Selesai
+```
